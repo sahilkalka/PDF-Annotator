@@ -1494,10 +1494,48 @@
         tbody td { transition: background 0.15s ease; }
         tbody tr:hover td:first-child { padding-left: 12px; }
         tbody tr:hover { background: rgba(37, 99, 235, 0.07); box-shadow: inset 3px 0 0 var(--accent); transform: none; }
+        /* ---- App Loader Splash Screen ---- */
+        .app-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+        .app-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .app-loader-spinner {
+            width: 54px;
+            height: 54px;
+            border: 4px solid color-mix(in srgb, var(--border) 60%, transparent);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: loaderSpin 0.85s cubic-bezier(0.14, 0.65, 0.74, 0.44) infinite;
+        }
+        .app-loader-text {
+            margin-top: 24px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: 0.02em;
+        }
+        @keyframes loaderSpin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-
+<div id="appLoader" class="app-loader">
+    <div class="app-loader-spinner"></div>
+    <div class="app-loader-text">Loading Workspace...</div>
+</div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="ic-al-top" viewBox="0 0 16 16"><circle cx="8" cy="9" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="1" width="10" height="2" rx="1"/></symbol>
     <symbol id="ic-al-bot" viewBox="0 0 16 16"><circle cx="8" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="10" height="2" rx="1"/></symbol>
@@ -3243,6 +3281,14 @@ async function generatePdfs() {
     } catch (err) { showToast(`Fatal Error: ${err.message}`, "error"); }
     finally { setBusy(false); }
 }
+// Wait for all resources (fonts, SVGs, etc.) to finish loading
+window.addEventListener("load", () => {
+    // Add a slight 400ms buffer so PyWebView finishes sizing the window cleanly
+    setTimeout(() => {
+        const loader = document.getElementById("appLoader");
+        if(loader) loader.classList.add("hidden");
+    }, 400);
+});
 </script>
 </body>
 </html>

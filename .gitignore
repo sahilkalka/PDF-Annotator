@@ -1,0 +1,7 @@
+*.zip
+*.spec
+uninstall.bat
+build
+dist
+venv
+__pycache__
