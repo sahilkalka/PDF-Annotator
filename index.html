@@ -1,0 +1,3248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PDF Annotation Studio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..700,0..1,0" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563eb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect x='4' y='4' width='16' height='16' rx='2' ry='2'></rect><rect x='9' y='9' width='6' height='6'></rect><line x1='9' y1='1' x2='9' y2='4'></line><line x1='15' y1='1' x2='15' y2='4'></line><line x1='9' y1='20' x2='9' y2='23'></line><line x1='15' y1='20' x2='15' y2='23'></line><line x1='20' y1='9' x2='23' y2='9'></line><line x1='20' y1='14' x2='23' y2='14'></line><line x1='1' y1='9' x2='4' y2='9'></line><line x1='1' y1='14' x2='4' y2='14'></line></svg>">
+    
+    <style>
+        /* ---- Base + default scheme (A: Indigo Slate) ---- */
+        :root {
+            --sidebar-width: 340px; --radius: 8px;
+            --control-radius: 12px;
+            --font-family: "Manrope", "Segoe UI", sans-serif;
+            color-scheme: light;
+            --bg: #eef1f6; --panel: #ffffff; --header: #0b1220; --accent: #4f46e5;
+            --accent-hover: #4338ca; --success: #059669; --warning: #d97706;
+            --danger: #dc2626; --text: #0f172a; --muted: #4b5768; --border: #d3d9e3;
+
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --speed-fast: 120ms;
+            --speed-normal: 220ms;
+            --speed-slow: 340ms;
+            --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.08);
+            --shadow-md: 0 10px 24px rgba(15, 23, 42, 0.12);
+            --shadow-lg: 0 18px 44px rgba(15, 23, 42, 0.18);
+            --depth-inset: inset 0 1px 0 rgba(255, 255, 255, 0.52), inset 0 -8px 12px -10px rgba(15, 23, 42, 0.28);
+            --depth-inset-strong: inset 0 1px 0 rgba(255, 255, 255, 0.58), inset 0 -14px 18px -14px rgba(15, 23, 42, 0.34);
+            --depth-raised: 0 2px 8px rgba(15, 23, 42, 0.1), 0 10px 22px rgba(15, 23, 42, 0.08);
+            --depth-rim: 1px solid color-mix(in srgb, var(--border) 78%, #000 22%);
+            --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+            --glass-panel: color-mix(in srgb, var(--panel) 88%, transparent);
+        }
+        :root[data-theme="dark"] {
+            color-scheme: dark;
+            --bg: #0a0c11; --panel: #151a23; --header: #000000; --accent: #818cf8;
+            --accent-hover: #a5b4fc; --text: #f5f7fb; --muted: #9aa4b8; --border: #283040;
+            --depth-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -8px 12px -10px rgba(0, 0, 0, 0.55);
+            --depth-inset-strong: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -14px 18px -14px rgba(0, 0, 0, 0.64);
+            --depth-raised: 0 2px 10px rgba(0, 0, 0, 0.32), 0 12px 28px rgba(0, 0, 0, 0.34);
+            --depth-rim: 1px solid color-mix(in srgb, var(--border) 86%, black 14%);
+        }
+
+        /* ---- Option B: Cyan Carbon ---- */
+        :root[data-scheme="b"] {
+            --bg: #eef3f4; --panel: #ffffff; --header: #0a171c; --accent: #0e7490;
+            --accent-hover: #155e75; --success: #047857; --warning: #b45309;
+            --danger: #be123c; --text: #0b1417; --muted: #45575e; --border: #cfdadd;
+        }
+        :root[data-scheme="b"][data-theme="dark"] {
+            --bg: #080d0f; --panel: #111a1d; --header: #000000; --accent: #22d3ee;
+            --accent-hover: #67e8f9; --text: #ecfeff; --muted: #8ea3aa; --border: #1e2a2e;
+        }
+
+        /* ---- Option C: Amber Noir ---- */
+        :root[data-scheme="c"] {
+            --bg: #f5f4f0; --panel: #ffffff; --header: #1a1205; --accent: #ea580c;
+            --accent-hover: #c2410c; --success: #16a34a; --warning: #ca8a04;
+            --danger: #dc2626; --text: #1c1917; --muted: #57534e; --border: #e2dccf;
+        }
+        :root[data-scheme="c"][data-theme="dark"] {
+            --bg: #0b0a07; --panel: #1a1712; --header: #000000; --accent: #fb923c;
+            --accent-hover: #fdba74; --text: #fafaf9; --muted: #a8a29e; --border: #2a251e;
+        }
+
+        /* ---- Option D: Emerald Ink ---- */
+        :root[data-scheme="d"] {
+            --bg: #eef2f0; --panel: #ffffff; --header: #0a1512; --accent: #059669;
+            --accent-hover: #047857; --success: #16a34a; --warning: #d97706;
+            --danger: #e11d48; --text: #0f1a16; --muted: #4b5b54; --border: #d2ddd7;
+        }
+        :root[data-scheme="d"][data-theme="dark"] {
+            --bg: #080f0c; --panel: #121a16; --header: #000000; --accent: #34d399;
+            --accent-hover: #6ee7b7; --text: #ecfdf5; --muted: #8fa89d; --border: #1f2a25;
+        }
+        /* --- UPGRADE: Sonar Target Ripple --- */
+        .sonar-target {
+            z-index: 9999 !important;
+        }
+        .sonar-ripple {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        /* Hardcode identical dimensions so it is always a perfect circle */
+        width: 40px; 
+        height: 30px;
+        background: transparent;
+        border: 3px solid var(--accent);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        opacity: 0;
+        animation: sonarPulse 1.2s cubic-bezier(0, 0, 0.2, 1) forwards;
+        }
+        @keyframes sonarPulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; border-width: 3px; }
+            100% { transform: translate(-50%, -50%) scale(4); opacity: 0; border-width: 1px; }
+        }
+/* ------------------------------------ */
+        * { scrollbar-color: color-mix(in srgb, var(--muted) 35%, var(--bg)) transparent; scrollbar-width: thin; }
+        *:hover { scrollbar-color: var(--accent) transparent; }
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--muted) 35%, var(--bg)); border-radius: 8px; border: 3px solid var(--bg); transition: background 0.15s ease; }
+        ::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--accent) 80%, var(--bg)); }
+        ::-webkit-scrollbar-thumb:active { background: var(--accent); }
+
+        * { box-sizing: border-box; }
+        body { margin: 0; height: 100vh; overflow: hidden; font-family: var(--font-family); color: var(--text); background: var(--bg); transition: background-color 0.3s ease, color 0.3s ease; }
+        aside, header, .toolbar, .bottom-panel, .accordion, .modal, input, select { transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+
+        .app-container { display: flex; flex-direction: column; height: 100vh; }
+        header { flex-shrink: 0; height: 56px; background: var(--header); color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); z-index: 100; }
+        header h1 { font-size: 16px; font-weight: 600; margin: 0; display: flex; align-items: center; gap: 8px; }
+        header .version-tag { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 12px; font-size: 11px; }
+
+        .workspace { display: flex; flex-grow: 1; overflow: hidden; }
+
+        aside {
+            width: var(--sidebar-width);
+            container-type: inline-size;
+            container-name: sidebar;
+            background:
+                linear-gradient(180deg,
+                    color-mix(in srgb, var(--panel) 92%, white 8%) 0%,
+                    color-mix(in srgb, var(--panel) 97%, var(--bg) 3%) 48%,
+                    color-mix(in srgb, var(--panel) 93%, black 7%) 100%);
+            border-right: 1px solid color-mix(in srgb, var(--border) 85%, #000 15%);
+            border-left: 1px solid color-mix(in srgb, white 50%, var(--border) 50%);
+            box-shadow:
+                inset -10px 0 18px rgba(15, 23, 42, 0.08),
+                inset 1px 0 0 rgba(255, 255, 255, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            z-index: 50;
+        }
+        :root[data-theme="dark"] aside {
+            border-right: 1px solid color-mix(in srgb, var(--border) 82%, black 18%);
+            border-left: 1px solid color-mix(in srgb, var(--border) 40%, white 60%);
+            box-shadow:
+                inset -12px 0 20px rgba(0, 0, 0, 0.38),
+                inset 1px 0 0 rgba(255, 255, 255, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+        .sidebar-content {
+            flex-grow: 1;
+            overflow-y: hidden;
+            overflow-x: hidden;
+            padding: 16px;
+            scrollbar-width: thin;
+            background: color-mix(in srgb, var(--panel) 93%, var(--bg) 7%);
+            box-shadow: inset 0 10px 14px -12px rgba(15, 23, 42, 0.26);
+        }
+        .sidebar-content.can-scroll { overflow-y: auto; }
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid color-mix(in srgb, var(--border) 75%, #000 25%);
+            background: color-mix(in srgb, var(--panel) 90%, var(--bg) 10%);
+            box-shadow: inset 0 10px 16px -12px rgba(15, 23, 42, 0.35);
+        }
+        .sidebar-divider { width: 6px; cursor: col-resize; background: transparent; flex-shrink: 0; position: relative; }
+        .sidebar-divider::after { content: ""; position: absolute; left: 2px; top: 0; bottom: 0; width: 2px; background: transparent; transition: background 0.15s ease; }
+        .sidebar-divider:hover::after, .sidebar-divider.dragging::after { background: var(--accent); }
+
+        .accordion {
+            border: none;
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            background: color-mix(in srgb, var(--panel) 90%, var(--bg) 10%);
+            overflow: visible;
+            box-shadow: none;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .accordion:not(.collapsed) {
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.45),
+                inset 0 -8px 10px -10px rgba(15, 23, 42, 0.33),
+                0 4px 12px rgba(15, 23, 42, 0.08);
+        }
+        .accordion-header {
+            padding: 12px 14px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.38) 0%, rgba(0,0,0,0.04) 100%);
+            border-bottom: 1px solid color-mix(in srgb, var(--border) 80%, #000 20%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.55);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            user-select: none;
+        }
+        :root[data-theme="dark"] .accordion-header { background: rgba(255,255,255,0.02); }
+        :root[data-theme="dark"] .accordion {
+            border: none;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                inset 0 -8px 10px -10px rgba(0, 0, 0, 0.48);
+        }
+        :root[data-theme="dark"] .accordion-header {
+            background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.22) 100%);
+            border-bottom: 1px solid color-mix(in srgb, var(--border) 90%, black 10%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+        }
+        .accordion-header:hover { background: linear-gradient(180deg, rgba(255,255,255,0.44) 0%, rgba(0,0,0,0.07) 100%); }
+        :root[data-theme="dark"] .accordion-header:hover { background: linear-gradient(180deg, rgba(255,255,255,0.09) 0%, rgba(0,0,0,0.28) 100%); }
+        .accordion-icon { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); font-size: 10px; opacity: 0.6; }
+        .accordion.collapsed .accordion-icon { transform: rotate(-90deg); }
+        .accordion-content {
+            padding: 14px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-height: 2000px;
+            overflow: visible;
+            opacity: 1;
+            visibility: visible;
+            transform-origin: top center;
+            transition:
+                max-height var(--speed-slow) var(--ease-out),
+                padding var(--speed-slow) var(--ease-out),
+                opacity var(--speed-normal) var(--ease-out),
+                border-color var(--speed-normal) var(--ease-out),
+                visibility var(--speed-normal) var(--ease-out);
+        }
+        .accordion.collapsed .accordion-content {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            border-top-width: 0;
+            opacity: 0;
+            visibility: hidden;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .placement-group-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border); }
+        .editing-scope { font-size: 12px; color: var(--text); background: rgba(37, 99, 235, 0.1); border: none; border-radius: var(--radius); padding: 8px 12px; margin-bottom: 12px; text-align: center; transition: background-color 0.3s ease, border-color 0.3s ease; }
+        .editing-scope strong { color: var(--accent); }
+        .editing-scope.slave { background: rgba(245, 158, 11, 0.12); border-color: var(--warning); }
+        .editing-scope.slave strong { color: var(--warning); }
+
+        .al-ic { display: block; width: 15px; height: 15px; fill: currentColor; }
+        .align-select { position: relative; justify-self: end; }
+        .align-current { display: inline-flex; align-items: center; gap: 6px; padding: 7px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--control-radius); color: var(--text); cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease; }
+        .align-current:hover, .align-select.open .align-current { border-color: var(--accent); background: rgba(37, 99, 235, 0.06); }
+        .align-current .align-current-label { font-size: 12px; font-weight: 600; color: var(--text); }
+        .align-current .caret { font-size: 8px; opacity: 0.6; transition: transform 0.2s ease; }
+        .align-select.open .align-current .caret { transform: rotate(180deg); }
+        .align-menu { position: absolute; top: calc(100% + 4px); right: 0; z-index: 60; display: none; flex-direction: column; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 8px 20px rgba(0,0,0,0.18); overflow: hidden; }
+        .align-select.open .align-menu { display: flex; animation: alignMenuIn 0.15s ease; }
+        .align-menu button { display: flex; align-items: center; justify-content: flex-start; gap: 8px; min-width: 120px; padding: 8px 12px; background: transparent; border: none; color: var(--muted); cursor: pointer; transition: background 0.12s ease, color 0.12s ease; }
+        .align-menu button:hover { background: rgba(37, 99, 235, 0.1); color: var(--text); }
+        .align-menu button.on { background: var(--accent); color: #fff; }
+        .align-menu .opt-label { font-size: 12px; font-weight: 600; }
+
+        .attach-align { width: 100%; }
+        .attach-align .align-current { width: 100%; justify-content: space-between; padding: 7px 10px; }
+        .attach-align .align-current .al-ic { width: 16px; height: 16px; }
+        .attach-align .align-menu { left: 0; right: 0; border-radius: 8px; }
+        .attach-align .align-menu button { width: 100%; min-width: 0; }
+        .attach-align .align-menu button .al-ic {
+            width: 16px;
+            height: 16px;
+            color: var(--attach-color, var(--accent));
+        }
+        .attach-align .align-menu button[data-val="top"] { --attach-color: var(--success); }
+        .attach-align .align-menu button[data-val="bottom"] { --attach-color: var(--warning); }
+        .attach-align .align-menu button[data-val="left"] { --attach-color: var(--accent); }
+        .attach-align .align-menu button[data-val="right"] { --attach-color: var(--danger); }
+        .attach-align .align-menu button:hover {
+            background: color-mix(in srgb, var(--attach-color, var(--accent)) 16%, transparent);
+            color: var(--text);
+        }
+        .attach-align .align-menu button.on {
+            background: color-mix(in srgb, var(--attach-color, var(--accent)) 28%, transparent);
+            color: var(--text);
+        }
+        .attach-align .align-menu button.on .opt-label { font-weight: 700; }
+
+        .attach-align[data-active="top"] .align-current .al-ic { color: var(--success); }
+        .attach-align[data-active="bottom"] .align-current .al-ic { color: var(--warning); }
+        .attach-align[data-active="left"] .align-current .al-ic { color: var(--accent); }
+        .attach-align[data-active="right"] .align-current .al-ic { color: var(--danger); }
+
+        @keyframes alignMenuIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+        .pin-line { display: grid; grid-template-columns: auto minmax(0,1fr) auto minmax(0,1fr) auto; gap: 4px 6px; align-items: center; }
+        .pin-line input[type="number"] { padding: 8px 6px; }
+
+        .drop-zone {
+            border: 2px dashed var(--border); border-radius: var(--radius); padding: 8px 10px;
+            text-align: center; background: rgba(0,0,0,0.01); cursor: pointer; transition: all 0.2s ease;
+            overflow: hidden; min-height: 52px; height: auto; display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background: rgba(37, 99, 235, 0.05); transform: translateY(-1px); }
+        .drop-zone.dragover { transform: scale(1.01); }
+        .drop-zone:active:not(.disabled) { transform: scale(0.99); }
+        .drop-zone.upload-flash { animation: uploadFlash 0.7s ease; }
+        @keyframes uploadFlash {
+            0% { border-color: var(--success); box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
+            100% { border-color: var(--border); box-shadow: 0 0 0 10px rgba(16,185,129,0); }
+        }
+        .drop-zone .dz-icon { font-size: 14px; margin-bottom: 2px; color: var(--accent); }
+        .drop-zone .dz-text { font-size: 11px; color: var(--text); font-weight: 500; margin: 0; }
+        .drop-zone .dz-file-name {
+            font-size: 10px; color: var(--success); margin-top: 2px; display: none;
+            font-weight: 600; overflow: hidden;
+            white-space: normal; word-break: break-all; line-height: 1.3;
+            line-clamp: 2;
+            -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px;
+            max-width: 100%; box-sizing: border-box;
+        }
+
+        label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 12px; }
+        .form-row:first-of-type { margin-top: 0; }
+        .form-row + .form-row {
+            border-top: 1px dashed color-mix(in srgb, var(--border) 78%, transparent);
+            padding-top: 12px;
+        }
+        .form-row > div { min-width: 0; }
+        .adv-section .form-row { align-items: flex-start; }
+        .adv-section .form-row .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-content: start;
+        }
+        .adv-section .form-row .form-group > label {
+            min-height: 0;
+            margin-bottom: 0;
+        }
+        .adv-section .form-row .form-group:empty { display: none; }
+        .common-inline-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end; }
+        .common-inline-row .align-select { justify-self: stretch; }
+        .common-inline-row .align-current { width: 100%; justify-content: space-between; }
+
+        .label-bg-picker-wrapper { position: relative; display: inline-block; width: 100%; }
+        .label-bg-trigger-btn {
+            display: flex; align-items: center; gap: 10px; width: 100%;
+            background: var(--bg); border: 1px solid var(--border); color: var(--text);
+            height: 34px; box-sizing: border-box; padding: 0 10px; line-height: 1;
+            border-radius: var(--control-radius); cursor: pointer; font-size: 12px; font-weight: 600;
+            transition: border-color 0.15s ease, background 0.15s ease;
+            justify-content: flex-start;
+        }
+        .adv-section .form-row .form-group .label-bg-picker-wrapper,
+        .adv-section .form-row .form-group .label-bg-trigger-btn {
+            width: 100%;
+            min-width: 0;
+        }
+        .label-bg-trigger-btn:hover { border-color: var(--accent); background: rgba(37, 99, 235, 0.06); }
+        .label-bg-swatch {
+            width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--border);
+            background-image: linear-gradient(45deg, #bbb 25%, transparent 25%), linear-gradient(-45deg, #bbb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #bbb 75%), linear-gradient(-45deg, transparent 75%, #bbb 75%);
+            background-size: 8px 8px; background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+            overflow: hidden; position: relative; flex-shrink: 0;
+        }
+        .label-bg-swatch-color { position: absolute; inset: 0; }
+        .label-bg-trigger-text { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .label-bg-panel {
+            display: none; position: absolute; top: calc(100% + 8px); right: 0; left: auto; z-index: 80;
+            width: min(270px, calc(var(--sidebar-width) - 40px)); max-width: calc(100vw - 40px);
+            background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+            padding: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.22);
+        }
+        .label-bg-panel.active { display: block; }
+        .label-bg-color-space { position: relative; width: 100%; height: 170px; border-radius: 6px; cursor: crosshair; margin-bottom: 10px; overflow: hidden; }
+        .label-bg-space-base, .label-bg-space-sat, .label-bg-space-val { position: absolute; inset: 0; }
+        .label-bg-space-sat { background: linear-gradient(to right, #fff, transparent); }
+        .label-bg-space-val { background: linear-gradient(to top, transparent, #000); }
+        .label-bg-pointer {
+            position: absolute; width: 12px; height: 12px; border: 2px solid #fff; border-radius: 4px;
+            box-shadow: 0 0 4px rgba(0,0,0,0.6); transform: translate(-7px, -7px); pointer-events: none;
+        }
+        .label-bg-slider { position: relative; width: 100%; height: 14px; border-radius: 4px; margin-bottom: 10px; cursor: pointer; overflow: hidden; }
+        .label-bg-slider-thumb { position: absolute; top: -2px; width: 8px; height: 18px; background: #fff; border: 1px solid #000; border-radius: 3px; transform: translateX(-4px); pointer-events: none; }
+        .label-bg-hue { background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%); }
+        .label-bg-alpha-wrap {
+            background-image: linear-gradient(45deg, #bbb 25%, transparent 25%), linear-gradient(-45deg, #bbb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #bbb 75%), linear-gradient(-45deg, transparent 75%, #bbb 75%);
+            background-size: 10px 10px; background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+        }
+        .label-bg-value { background: color-mix(in srgb, var(--bg) 92%, var(--panel) 8%); border: var(--depth-rim); border-radius: 4px; padding: 6px; text-align: center; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; box-shadow: var(--depth-inset); }
+        .adv-section { border: 1px solid color-mix(in srgb, var(--border) 70%, transparent); border-radius: 10px; padding: 14px; background: color-mix(in srgb, var(--panel) 93%, var(--bg) 7%); box-shadow: none; }
+        :root[data-theme="dark"] .adv-section { background: rgba(255,255,255,0.01); }
+        .accordion-content > .adv-section + .adv-section {
+            margin-top: 12px;
+            padding-top: 14px;
+            border-top: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+        }
+        .adv-section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); margin: 0 0 8px 0; }
+
+        /* Style accordion: force a clean single-column stack for Ring Setup + Label Appearance */
+        #acc-style .form-row {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        #acc-style .form-row + .form-row {
+            padding-top: 10px;
+        }
+        #acc-style .form-group {
+            width: 100%;
+            min-width: 0;
+        }
+        #acc-style input[type="number"],
+        #acc-style select,
+        #acc-style .align-select,
+        #acc-style .align-current,
+        #acc-style .label-bg-picker-wrapper,
+        #acc-style .label-bg-trigger-btn {
+            width: 100%;
+            max-width: 100%;
+        }
+        #acc-style input[type="text"],
+        #acc-style input[type="number"],
+        #acc-style select,
+        #acc-style .align-current,
+        #acc-style .label-bg-trigger-btn {
+            border-radius: 12px;
+        }
+
+        /* Keep picker button text fully visible in style section */
+        #acc-style .label-bg-trigger-btn {
+            min-height: 36px;
+            padding: 0 12px;
+        }
+        #acc-style .label-bg-trigger-text {
+            white-space: nowrap;
+            overflow: visible;
+            text-overflow: clip;
+            font-family: var(--font-family);
+            font-size: 12px;
+            letter-spacing: 0;
+        }
+
+        /* Remove outer section borders for Ring Setup + Label Appearance */
+        #acc-style .adv-section {
+            border: none;
+            box-shadow: none;
+            background: color-mix(in srgb, var(--panel) 93%, var(--bg) 7%);
+            padding: 10px 0;
+        }
+        #acc-style .accordion-content > .adv-section + .adv-section {
+            border-top: none;
+            margin-top: 14px;
+            padding-top: 0;
+        }
+
+        .offset-card {
+            border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+            background: color-mix(in srgb, var(--bg) 64%, transparent);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .offset-card-title {
+            margin: 0 0 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.25;
+        }
+        .offset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+        .offset-cell {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            align-items: center;
+            gap: 8px;
+        }
+        .offset-axis {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            min-width: 10px;
+            text-align: center;
+        }
+        .offset-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .offset-subtitle {
+            margin: 0 0 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+        }
+        
+        @container sidebar (max-width: 360px) {
+            .accordion-content {
+                padding: 12px;
+                gap: 10px;
+            }
+            .adv-section {
+                padding: 10px;
+            }
+            .form-row {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+                margin-top: 6px;
+            }
+            .form-row + .form-row {
+                padding-top: 6px;
+            }
+        }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 8px 10px; font-size: 13px; border: var(--depth-rim); border-radius: var(--control-radius); background: color-mix(in srgb, var(--bg) 90%, var(--panel) 10%); color: var(--text); transition: border-color 0.2s; box-sizing: border-box; box-shadow: var(--depth-inset); }
+        input[type="color"] { width: 100%; height: 34px; padding: 2px; border: var(--depth-rim); border-radius: var(--control-radius); background: color-mix(in srgb, var(--bg) 90%, var(--panel) 10%); cursor: pointer; box-shadow: var(--depth-inset); }
+        input:focus, select:focus { outline: none; border-color: var(--accent); }
+
+        /* Global control radius standardization */
+        input[type="text"],
+        input[type="number"],
+        select,
+        .align-current,
+        .label-bg-trigger-btn {
+            border-radius: var(--control-radius);
+        }
+        
+        button { border: 1px solid color-mix(in srgb, var(--accent) 72%, #000 28%); border-radius: var(--radius); padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 86%, white 14%) 0%, var(--accent) 100%); color: #fff; transition: background 0.2s, transform 0.1s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), var(--depth-raised); }
+        button:hover:not(:disabled) { background: var(--accent-hover); }
+        button:active:not(:disabled) { transform: scale(0.98); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        button.secondary { background: color-mix(in srgb, var(--panel) 88%, var(--bg) 12%); color: var(--text); border: var(--depth-rim); box-shadow: var(--depth-inset); }
+        button.secondary:hover:not(:disabled) { background: color-mix(in srgb, var(--panel) 78%, var(--accent) 22%); }
+        :root[data-theme="dark"] button.secondary:hover:not(:disabled) { background: rgba(255,255,255,0.05); }
+        button.ghost { background: color-mix(in srgb, var(--panel) 84%, transparent); color: var(--accent); border: var(--depth-rim); padding: 6px 10px; box-shadow: var(--depth-inset); }
+        button.ghost:hover { background: rgba(37, 99, 235, 0.1); }
+        header button.secondary { color: #fff; border-color: rgba(255,255,255,0.3); }
+        header button.secondary:hover { background: rgba(255,255,255,0.1); }
+        .scheme-swatches { display: flex; gap: 6px; align-items: center; }
+        .swatch { width: 18px; height: 18px; padding: 0; border-radius: 50%; border: 1px solid rgba(255,255,255,0.45); background: var(--sw); cursor: pointer; transition: transform 0.12s ease, box-shadow 0.12s ease; }
+        .swatch:hover { transform: scale(1.15); }
+        .swatch.active { box-shadow: 0 0 0 2px var(--header), 0 0 0 3px #fff; }
+        .icon-btn { padding: 6px 8px; }
+        .theme-icon { display: inline-flex; }
+        .theme-icon .sun { display: none; } .theme-icon .moon { display: inline; }
+        :root[data-theme="dark"] .theme-icon .moon { display: none; } :root[data-theme="dark"] .theme-icon .sun { display: inline; }
+
+        .d-pad-container { display: flex; justify-content: center; margin-top: 8px; }
+        .d-pad { display: grid; grid-template-columns: repeat(3, 30px); grid-template-rows: repeat(3, 30px); gap: 4px; }
+        .d-btn { padding: 0; background: color-mix(in srgb, var(--bg) 90%, var(--panel) 10%); border: var(--depth-rim); color: var(--text); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; transition: all 0.1s; box-shadow: var(--depth-inset); }
+        .d-btn.active { background: var(--accent); color: white; border-color: var(--accent); transform: scale(0.95); }
+        .d-btn:hover:not(.active) { background: rgba(37, 99, 235, 0.1); }
+        .d-center { background: transparent; pointer-events: none; }
+
+        main { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .toolbar { height: 50px; background: color-mix(in srgb, var(--panel) 92%, var(--bg) 8%); border-bottom: var(--depth-rim); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex-shrink: 0; z-index: 10; box-shadow: var(--depth-inset-strong); }
+        .toolbar-group { display: flex; align-items: center; gap: 8px; }
+        .toolbar-group-main { flex-wrap: nowrap; }
+        .toolbar-group-file { min-width: 0; flex: 1 1 260px; justify-content: center; }
+        .toolbar-group-nav { flex-wrap: nowrap; justify-content: flex-end; }
+        #btnMaster, #btnSlave { transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+        #btnMaster.active, #btnSlave.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 2px 8px rgba(37,99,235,0.35); }
+        .current-file-name { font-size: 15px; font-weight: 700; color: var(--text); max-width: 420px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .current-file-name .cfn-icon { color: var(--accent); margin-right: 6px; }
+        .current-file-name:empty { display: none; }
+        .preview-area { flex-grow: 1; overflow: auto; background: var(--bg); padding: 24px; text-align: center; scroll-behavior: smooth; position: relative; }
+
+        .busy-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; gap: 12px; background: rgba(255,255,255,0.45); backdrop-filter: blur(0px); z-index: 40; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, backdrop-filter 0.25s ease, visibility 0.25s; }
+        :root[data-theme="dark"] .busy-overlay { background: rgba(0,0,0,0.4); }
+        .busy-overlay.active { opacity: 1; visibility: visible; backdrop-filter: blur(2px); }
+        .busy-spinner { width: 38px; height: 38px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: busySpin 0.8s linear infinite; }
+        .busy-overlay .busy-text { font-size: 13px; font-weight: 600; color: var(--text); }
+        @keyframes busySpin { to { transform: rotate(360deg); } }
+
+        .bottom-panel { height: 250px; min-height: 40px; background: color-mix(in srgb, var(--panel) 92%, var(--bg) 8%); display: flex; flex-direction: column; flex-shrink: 0; z-index: 10; border-top: var(--depth-rim); box-shadow: var(--depth-inset-strong); }
+        
+        #imgContainer { display: inline-block; text-align: left; position: relative; background: #fff; border: var(--depth-rim); box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), 0 8px 24px rgba(0,0,0,0.12); transform-origin: top left; transition: width 0.1s ease, height 0.1s ease; min-width: 300px; min-height: 200px; }
+        #pdfImage { display: block; width: 100%; height: auto; user-select: none; }
+        #overlayContainer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: hidden;}
+        .placeholder {
+            width: 100%;
+            min-height: 260px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px;
+            color: var(--muted);
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            background: linear-gradient(180deg, color-mix(in srgb, var(--panel) 94%, white 6%) 0%, color-mix(in srgb, var(--panel) 90%, var(--bg) 10%) 100%);
+            border: 1px solid color-mix(in srgb, var(--border) 75%, transparent);
+            border-radius: 10px;
+        }
+        .placeholder .ph-inner {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            max-width: 320px;
+        }
+        .placeholder .ph-inner .material-symbols-rounded {
+            font-size: 26px;
+            color: var(--accent);
+        }
+        .placeholder .ph-sub {
+            font-size: 11px;
+            font-weight: 500;
+            color: color-mix(in srgb, var(--muted) 82%, transparent);
+        }
+
+        .drag-label { 
+            position: absolute; border: 1px dashed var(--accent); background: rgba(37, 99, 235, 0.05); 
+            cursor: grab; pointer-events: auto; box-sizing: border-box; z-index: 10; border-radius: 2px; 
+            transition: left 0.2s ease, top 0.2s ease, background 0.2s; 
+        }
+        .drag-label:active { cursor: grabbing; transition: none; }
+        .drag-label:hover { background: rgba(37, 99, 235, 0.15); border-style: solid; }
+        .drag-label::after { 
+            content: attr(data-label); position: absolute; top: -20px; left: 0; background: var(--accent); 
+            color: #fff; padding: 2px 6px; border-radius: 3px; white-space: nowrap; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); opacity: 0; pointer-events: none;
+            transition: transform 0.2s ease-in-out, opacity 0.2s;
+        }
+        .drag-label:hover::after { opacity: 1; }
+        
+        .drag-label[data-dir="NE"]::after { transform: rotate(-45deg) translate(5px, -5px); transform-origin: bottom left; }
+        .drag-label[data-dir="SE"]::after { transform: rotate(45deg) translate(5px, 5px); transform-origin: top left; }
+        .drag-label[data-dir="SW"]::after { transform: rotate(135deg) translate(5px, 5px); transform-origin: top right; }
+        .drag-label[data-dir="NW"]::after { transform: rotate(-135deg) translate(5px, -5px); transform-origin: bottom right; }
+
+        .drag-label.highlight { border: 2px solid var(--warning) !important; background: rgba(245, 158, 11, 0.3) !important; box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.3); z-index: 999; }
+        .ping-highlight { position: absolute; width: 40px; height: 40px; margin-left: -20px; margin-top: -20px; border-radius: 50%; background: rgba(245, 158, 11, 0.6); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite; pointer-events: none; z-index: 100; }
+        @keyframes ping { 75%, 100% { transform: scale(2.5); opacity: 0; } }
+
+        .tabs { display: flex; gap: 2px; padding: 0 8px; background: color-mix(in srgb, var(--bg) 88%, var(--panel) 12%); border-bottom: var(--depth-rim); flex-shrink: 0; box-shadow: var(--depth-inset); }
+        .tab { background: color-mix(in srgb, var(--panel) 84%, var(--bg) 16%); color: var(--muted); border: var(--depth-rim); padding: 10px 16px; font-size: 12px; font-weight: 600; border-bottom: 2px solid transparent; border-radius: 6px 6px 0 0; cursor: pointer; box-shadow: var(--depth-inset); }
+        .tab:hover { color: var(--text); }
+        .tab.active { color: var(--accent); border-bottom-color: var(--accent); background: color-mix(in srgb, var(--panel) 92%, var(--accent) 8%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 3px 10px rgba(15,23,42,0.1); }
+        .row-count { background: color-mix(in srgb, var(--border) 76%, var(--panel) 24%); color: var(--text); border-radius: 10px; padding: 2px 6px; font-size: 10px; margin-left: 6px; box-shadow: var(--depth-inset); }
+        .table-view { display: none; flex-grow: 1; overflow: auto; }
+        .table-view.active { display: block; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 90%, var(--panel) 10%); color: var(--muted); font-weight: 600; padding: 8px 12px; text-align: left; z-index: 2; border-bottom: var(--depth-rim); box-shadow: inset 0 1px 0 rgba(255,255,255,0.42); }
+        td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+
+        .log-container { padding: 10px; }
+        .log { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+        .log.success { color: var(--success); }
+        .log.warning { color: var(--warning); }
+        .log.error { color: var(--danger); }
+        .status-pill { padding: 4px 10px; border-radius: 12px; font-weight: 700; color: #fff; }
+        .status-success { background: var(--success); }
+        .status-warning { background: var(--warning); color: #000; }
+        .status-error { background: var(--danger); }
+        .status-idle { background: var(--muted); }
+
+        .toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { position: relative; overflow: hidden; background: color-mix(in srgb, var(--panel) 92%, var(--bg) 8%); border-left: 4px solid var(--accent); border: var(--depth-rim); padding: 12px 20px; border-radius: 8px; box-shadow: var(--depth-inset), var(--depth-raised); font-size: 13px; font-weight: 500; animation: slideIn 0.32s cubic-bezier(0.34,1.56,0.64,1) forwards, fadeOut 0.3s ease 3s forwards; pointer-events: auto; cursor: pointer; }
+        .toast:hover { animation-play-state: paused; }
+        .toast::after { content: ""; position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--accent); transform-origin: left; animation: toastProgress 3.3s linear forwards; opacity: 0.5; }
+        .toast.success { border-color: var(--success); } .toast.success::after { background: var(--success); }
+        .toast.error { border-color: var(--danger); } .toast.error::after { background: var(--danger); }
+        .toast.warning { border-color: var(--warning); } .toast.warning::after { background: var(--warning); }
+        @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateX(120%); } }
+        @keyframes toastProgress { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 10000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); animation: overlayIn 0.2s ease; }
+        .modal { background: color-mix(in srgb, var(--panel) 94%, var(--bg) 6%); border: var(--depth-rim); padding: 24px; border-radius: var(--radius); width: 400px; max-width: 90%; box-shadow: var(--depth-inset-strong), var(--shadow-lg); animation: modalIn 0.28s cubic-bezier(0.34,1.56,0.64,1); }
+        @keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes modalIn { from { opacity: 0; transform: translateY(12px) scale(0.96); } to { opacity: 1; transform: none; } }
+        .modal h2 { margin-top: 0; font-size: 18px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+        .modal p { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+        .modal .path-box { position: relative; background: color-mix(in srgb, var(--bg) 90%, var(--panel) 10%); border: var(--depth-rim); padding: 10px 34px 10px 10px; border-radius: 4px; font-family: monospace; color: var(--text); word-break: break-all; margin-bottom: 10px; cursor: copy; transition: border-color 0.2s ease, background 0.2s ease; box-shadow: var(--depth-inset); }
+        .modal .path-box:hover { border-color: var(--accent); background: rgba(37,99,235,0.05); }
+        .modal .path-box::after { content: "⧉"; position: absolute; right: 10px; top: 10px; opacity: 0.5; font-size: 13px; }
+        .modal .path-box.copied::after { content: "✓ copied"; color: var(--success); opacity: 1; font-size: 10px; font-family: var(--font-family); }
+        .modal-footer { display: flex; justify-content: flex-end; margin-top: 20px; }
+
+
+        /* ================= Premium interaction/performance layer ================= */
+        body {
+            font-size: clamp(13px, 0.35vw + 11px, 15px);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: geometricPrecision;
+        }
+        header h1 { font-size: clamp(15px, 0.55vw + 13px, 20px); }
+        button { font-size: clamp(12px, 0.25vw + 11px, 14px); }
+
+        header,
+        .toolbar,
+        .bottom-panel,
+        aside,
+        .modal,
+        .toast,
+        .accordion,
+        .drop-zone,
+        #imgContainer {
+            backface-visibility: hidden;
+            transform: translateZ(0);
+        }
+
+        aside {
+            contain: layout paint style;
+            will-change: width;
+        }
+
+        header {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.16);
+        }
+
+        .toolbar {
+            background: color-mix(in srgb, var(--glass-panel) 82%, var(--panel) 18%);
+            backdrop-filter: blur(14px) saturate(1.12);
+            -webkit-backdrop-filter: blur(14px) saturate(1.12);
+            box-shadow: var(--depth-inset-strong);
+        }
+
+        .accordion {
+            transition:
+                transform var(--speed-normal) var(--ease-out),
+                box-shadow var(--speed-normal) var(--ease-out),
+                border-color var(--speed-normal) var(--ease-out),
+                background-color var(--speed-normal) var(--ease-out);
+            will-change: transform;
+        }
+        .accordion:hover {
+            transform: translateY(-1px);
+            border-color: color-mix(in srgb, var(--accent) 24%, var(--border));
+        }
+        .accordion:not(.collapsed) {
+            box-shadow: var(--shadow-sm);
+        }
+        .accordion-header {
+            transition:
+                background-color var(--speed-normal) var(--ease-out),
+                padding-left var(--speed-normal) var(--ease-out),
+                color var(--speed-normal) var(--ease-out);
+        }
+        .accordion-header:hover {
+            padding-left: 18px;
+            background: color-mix(in srgb, var(--accent) 7%, transparent);
+        }
+
+        button {
+            position: relative;
+            overflow: hidden;
+            transition:
+                transform var(--speed-fast) var(--ease-out),
+                box-shadow var(--speed-normal) var(--ease-out),
+                background-color var(--speed-normal) var(--ease-out),
+                border-color var(--speed-normal) var(--ease-out),
+                color var(--speed-normal) var(--ease-out),
+                opacity var(--speed-normal) var(--ease-out);
+            will-change: transform;
+        }
+        button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), 0 10px 24px rgba(15, 23, 42, 0.16);
+        }
+        button:active:not(:disabled) {
+            transform: translateY(0) scale(0.97);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.2), 0 2px 8px rgba(15, 23, 42, 0.1);
+        }
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        .align-current:focus-visible,
+        .label-bg-trigger-btn:focus-visible {
+            outline: none;
+            box-shadow: var(--focus-ring);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="color"],
+        select,
+        .align-current,
+        .label-bg-trigger-btn {
+            border: var(--depth-rim);
+            background: color-mix(in srgb, var(--bg) 90%, var(--panel) 10%);
+            box-shadow: var(--depth-inset);
+            transition:
+                transform var(--speed-fast) var(--ease-out),
+                border-color var(--speed-normal) var(--ease-out),
+                box-shadow var(--speed-normal) var(--ease-out),
+                background-color var(--speed-normal) var(--ease-out),
+                color var(--speed-normal) var(--ease-out);
+        }
+        input[type="text"]:hover,
+        input[type="number"]:hover,
+        input[type="color"]:hover,
+        select:hover,
+        .align-current:hover,
+        .label-bg-trigger-btn:hover {
+            border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
+            box-shadow: 0 4px 14px rgba(15,23,42,0.06);
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="color"]:focus,
+        select:focus {
+            border-color: var(--accent);
+            box-shadow: var(--focus-ring);
+        }
+
+        .drop-zone {
+            transition:
+                transform var(--speed-fast) var(--ease-out),
+                border-color var(--speed-normal) var(--ease-out),
+                background-color var(--speed-normal) var(--ease-out),
+                box-shadow var(--speed-normal) var(--ease-out),
+                opacity var(--speed-normal) var(--ease-out);
+            will-change: transform;
+        }
+        .drop-zone:hover:not(.disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--depth-inset), 0 10px 24px rgba(15, 23, 42, 0.14);
+        }
+        .drop-zone.dragover {
+            transform: scale(1.015);
+            box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent), var(--shadow-md);
+        }
+        .drop-zone:active:not(.disabled) { transform: scale(0.985); }
+
+        .swatch {
+            transition:
+                transform var(--speed-fast) var(--ease-spring),
+                box-shadow var(--speed-normal) var(--ease-out),
+                opacity var(--speed-normal) var(--ease-out);
+            will-change: transform;
+        }
+        .swatch:hover { transform: scale(1.18); }
+        .swatch:active { transform: scale(0.92); }
+
+        #imgContainer {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 12px 34px rgba(0,0,0,0.14), 0 2px 8px rgba(0,0,0,0.08);
+            transition:
+                width 0.1s var(--ease-out),
+                height 0.1s var(--ease-out),
+                box-shadow var(--speed-normal) var(--ease-out),
+                transform var(--speed-normal) var(--ease-out);
+        }
+        #imgContainer:hover {
+            box-shadow: 0 18px 46px rgba(0,0,0,0.18), 0 4px 14px rgba(0,0,0,0.1);
+        }
+
+        .drag-label {
+            will-change: transform, opacity;
+            transition:
+                background-color var(--speed-fast) var(--ease-out),
+                border-color var(--speed-fast) var(--ease-out),
+                box-shadow var(--speed-fast) var(--ease-out),
+                opacity var(--speed-fast) var(--ease-out);
+        }
+        .drag-label:hover {
+            box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+        }
+
+        .tab {
+            transition:
+                color var(--speed-normal) var(--ease-out),
+                background-color var(--speed-normal) var(--ease-out),
+                transform var(--speed-fast) var(--ease-out),
+                border-color var(--speed-normal) var(--ease-out);
+        }
+        .tab:hover { transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 8px 18px rgba(15,23,42,0.12); }
+
+        .toast {
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            animation: premiumToastIn var(--speed-slow) var(--ease-spring) forwards, fadeOut 0.3s ease 3s forwards;
+            will-change: transform, opacity;
+        }
+        @keyframes premiumToastIn {
+            from { opacity: 0; transform: translateY(14px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .busy-overlay {
+            transition:
+                opacity var(--speed-normal) var(--ease-out),
+                backdrop-filter var(--speed-normal) var(--ease-out),
+                visibility var(--speed-normal) var(--ease-out);
+        }
+        .busy-overlay.active { backdrop-filter: blur(3px) saturate(1.08); }
+        .busy-spinner { animation: busySpin 0.75s linear infinite; }
+
+        .current-file-name {
+            font-size: clamp(13px, 0.35vw + 12px, 16px);
+        }
+
+        /* ---- Canva-style workspace shell ---- */
+        .workspace.canva-layout aside {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            overflow: hidden;
+            min-width: 56px;
+        }
+        .workspace.canva-layout .sidebar-rail {
+            width: 80px;
+            flex-shrink: 0;
+            border-right: 1px solid color-mix(in srgb, var(--border) 78%, #000 22%);
+            background: color-mix(in srgb, var(--panel) 88%, var(--bg) 12%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 6px;
+        }
+        .workspace.canva-layout .sidebar-collapse-btn,
+        .workspace.canva-layout .sidebar-nav-btn {
+            width: 72px;
+            min-width: 72px;
+            min-height: 50px;
+            padding: 5px 2px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            border: var(--depth-rim);
+            background: color-mix(in srgb, var(--panel) 86%, var(--bg) 14%);
+            color: var(--muted);
+            box-shadow: var(--depth-inset);
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+        }
+        .workspace.canva-layout .sidebar-rail-label {
+            font-size: 9px;
+            line-height: 1.15;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            color: currentColor;
+            opacity: 0.88;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        .workspace.canva-layout .sidebar-nav-btn.active {
+            background: color-mix(in srgb, var(--accent) 22%, var(--panel) 78%);
+            color: var(--text);
+            border-color: color-mix(in srgb, var(--accent) 64%, var(--border) 36%);
+        }
+        .workspace.canva-layout .sidebar-rail-sep {
+            width: 24px;
+            height: 1px;
+            background: var(--border);
+            margin: 2px 0 6px;
+        }
+        .workspace.canva-layout .sidebar-panel-host {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .workspace.canva-layout .sidebar-panel {
+            display: none;
+            flex: 1;
+            min-height: 0;
+            overflow: hidden;
+        }
+        .workspace.canva-layout .sidebar-panel.active {
+            display: flex;
+            flex-direction: column;
+        }
+        .workspace.canva-layout .sidebar-panel-settings .accordion-header {
+            display: none;
+        }
+        .workspace.canva-layout .sidebar-panel-settings .accordion {
+            margin-bottom: 0;
+        }
+        .workspace.canva-layout .sidebar-panel-settings .accordion-content {
+            border-top-width: 0;
+            max-height: none;
+            padding-top: 14px;
+            padding-bottom: 14px;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        .workspace.canva-layout .sidebar-panel-data #tablesPanel {
+            height: 100%;
+            min-height: 0;
+            border-top: none;
+            box-shadow: none;
+            background: color-mix(in srgb, var(--panel) 90%, var(--bg) 10%);
+        }
+        .workspace.canva-layout .sidebar-panel-data #tablesPanel .tabs {
+            display: none;
+        }
+        .workspace.canva-layout .sidebar-panel-data #tablesPanel .table-view {
+            display: none;
+            flex: 1;
+            min-height: 0;
+            overflow: auto;
+        }
+        .workspace.canva-layout .sidebar-panel-data #tablesPanel .table-view.active {
+            display: block;
+        }
+        .workspace.canva-layout.sidebar-collapsed aside {
+            width: 80px !important;
+            min-width: 80px;
+        }
+        .workspace.canva-layout.sidebar-collapsed .sidebar-panel-host {
+            display: none;
+        }
+        .workspace.canva-layout.sidebar-collapsed .sidebar-divider {
+            display: none;
+        }
+
+        .workspace.canva-layout #mainPanel {
+            min-width: 0;
+        }
+        .workspace.canva-layout #splitter,
+        .workspace.canva-layout > #mainPanel > #tablesPanel {
+            display: none !important;
+        }
+        .workspace.canva-layout .preview-area {
+            flex: 1;
+            min-height: 0;
+            padding: 16px;
+        }
+        .workspace.canva-layout .toolbar { display: none !important; }
+
+        .material-symbols-rounded {
+            font-family: "Material Symbols Rounded";
+            font-weight: 500;
+            font-style: normal;
+            font-size: 19px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            height: 46px;
+            min-height: 46px;
+            padding: 0 8px;
+            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid color-mix(in srgb, var(--border) 30%, transparent);
+        }
+        .top-bar-brand { display: flex; align-items: center; gap: 8px; min-width: 200px; }
+        .top-bar-brand h1 { font-size: 13px; gap: 8px; }
+        .top-bar-brand h1 svg { width: 16px; height: 16px; }
+        .top-bar-workflow { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+        .top-bar-project {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: min(520px, 100%);
+            padding: 6px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .top-bar-actions { display: flex; align-items: center; gap: 4px; flex-wrap: nowrap; justify-content: flex-end; }
+        .combo-input {
+            display: grid;
+            grid-template-columns: auto auto auto minmax(170px, 1fr) auto;
+            gap: 8px;
+            align-items: center;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 14px;
+        }
+        .header-upload {
+            height: 34px;
+            padding: 0 10px;
+            border-radius: 10px;
+            gap: 6px;
+            font-size: 11px;
+            border-color: rgba(255, 255, 255, 0.24);
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .header-upload .material-symbols-rounded { font-size: 17px; }
+        .top-bar-project #projectSelect {
+            height: 34px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            box-shadow: none;
+            font-size: 12px;
+            padding: 0 10px;
+        }
+        .top-bar-project #projectSelect option { color: #0f172a; }
+        .top-bar-project #parseDataBtn {
+            height: 34px;
+            min-width: 86px;
+            border-radius: 10px;
+            padding: 0 12px;
+        }
+        .status-group { display: inline-flex; align-items: center; gap: 6px; }
+        .status-divider { width: 1px; height: 22px; background: rgba(255,255,255,0.2); margin: 0 10px; }
+        .compact-btn { min-width: 30px; height: 30px; padding: 0 7px; border-radius: 8px; box-shadow: none; }
+        .compact-btn .material-symbols-rounded { font-size: 17px; }
+        .top-bar-actions #previewStatus {
+            margin-right: 12px;
+            padding-right: 2px;
+        }
+        .top-bar-actions #schemeSwatches {
+            margin-left: 2px;
+            margin-right: 12px;
+            padding: 0 2px;
+        }
+        .top-bar-actions .generate-final-btn {
+            margin-left: 14px;
+            min-width: 146px;
+        }
+        .top-bar-actions .theme-toggle-btn {
+            color: #fff;
+            border-color: rgba(255,255,255,0.34);
+            background: rgba(255,255,255,0.10);
+        }
+        .top-bar-actions .theme-toggle-btn:hover {
+            background: rgba(255,255,255,0.16);
+            border-color: rgba(255,255,255,0.44);
+        }
+        #currentFileName.current-file-name {
+            color: color-mix(in srgb, #fff 85%, transparent);
+            font-size: 12px;
+            max-width: 100%;
+        }
+        #currentFileName .cfn-icon { color: #c7d2fe; }
+
+        .workspace.canva-layout aside {
+            background: color-mix(in srgb, var(--panel) 97%, var(--bg) 3%);
+            border-right: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+            box-shadow: none;
+        }
+        .workspace.canva-layout .sidebar-rail {
+            width: 80px;
+            border-right: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+            background: color-mix(in srgb, var(--panel) 95%, var(--bg) 5%);
+            padding: 8px 4px;
+            gap: 6px;
+        }
+        .workspace.canva-layout .sidebar-collapse-btn,
+        .workspace.canva-layout .sidebar-nav-btn,
+        .workspace.canva-layout .sidebar-view-btn,
+        .workspace.canva-layout .sidebar-action-btn {
+            width: 72px;
+            min-width: 72px;
+            min-height: 50px;
+            padding: 5px 2px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            box-shadow: none;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+        }
+        .workspace.canva-layout .sidebar-rail-label {
+            font-size: 9px;
+            line-height: 1.15;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            color: currentColor;
+            opacity: 0.9;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        #parseDataBtn {
+            margin-top: 10px;
+        }
+        .workspace.canva-layout .sidebar-collapse-btn:hover,
+        .workspace.canva-layout .sidebar-nav-btn:hover,
+        .workspace.canva-layout .sidebar-view-btn:hover,
+        .workspace.canva-layout .sidebar-action-btn:hover {
+            background: color-mix(in srgb, var(--accent) 12%, transparent);
+            color: var(--text);
+            transform: none;
+            box-shadow: none;
+        }
+        .workspace.canva-layout .sidebar-nav-btn.active {
+            background: color-mix(in srgb, var(--accent) 18%, transparent);
+            color: var(--accent);
+            border: none;
+        }
+        .workspace.canva-layout .sidebar-view-btn.active {
+            background: color-mix(in srgb, var(--accent) 22%, transparent);
+            color: var(--accent);
+        }
+        .workspace.canva-layout .sidebar-panel-host { background: transparent; }
+        .workspace.canva-layout.sidebar-collapsed aside {
+            width: 80px !important;
+            min-width: 80px;
+            border-right: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+        }
+        .workspace.canva-layout .preview-area {
+            padding: 14px;
+            height: 100%;
+        }
+
+        .canvas-fab-controls {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 35;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
+            width: 64px;
+            padding: 10px 6px;
+            border-radius: 12px;
+            background: color-mix(in srgb, var(--panel) 90%, transparent);
+            border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+            backdrop-filter: blur(10px) saturate(1.05);
+            box-shadow: var(--shadow-md);
+        }
+        .canvas-fab-btn {
+            width: 52px;
+            min-width: 52px;
+            min-height: 44px;
+            border-radius: 10px;
+            padding: 5px 2px;
+            background: transparent;
+            color: var(--muted);
+            border: none;
+            box-shadow: none;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+        }
+        .canvas-fab-btn:hover {
+            background: color-mix(in srgb, var(--accent) 12%, transparent);
+            color: var(--text);
+        }
+        .canvas-fab-btn.active {
+            background: color-mix(in srgb, var(--accent) 22%, transparent);
+            color: var(--accent);
+        }
+        .canvas-fab-label {
+            font-size: 9px;
+            line-height: 1;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            color: currentColor;
+            opacity: 0.9;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .canvas-fab-controls .canvas-fab-btn .material-symbols-rounded { font-size: 19px; }
+        .canvas-fab-sep {
+            width: 20px;
+            height: 1px;
+            background: color-mix(in srgb, var(--border) 75%, transparent);
+            margin: 1px 0;
+        }
+        .canvas-page-group {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+        }
+        .canvas-page-counter {
+            font-size: 10px;
+            color: var(--muted);
+            width: 52px;
+            text-align: center;
+            padding: 2px 2px;
+            border-radius: 6px;
+            background: color-mix(in srgb, var(--panel) 80%, var(--bg) 20%);
+            border: 1px solid color-mix(in srgb, var(--border) 68%, transparent);
+        }
+
+        .drop-zone .dz-icon {
+            margin-bottom: 4px;
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .drop-zone .dz-icon .material-symbols-rounded { font-size: 18px; }
+
+        @media (max-width: 1280px) {
+            header {
+                height: 46px;
+                min-height: 46px;
+                padding: 0 8px;
+                align-items: center;
+                flex-wrap: nowrap;
+            }
+            .top-bar-brand { min-width: 0; }
+            .top-bar-workflow { order: 2; flex-basis: auto; }
+            .top-bar-actions { order: 3; margin-left: auto; }
+        }
+
+        @media (max-width: 1100px) {
+            .workspace.canva-layout aside {
+                width: min(430px, 48vw);
+            }
+        }
+        @media (max-width: 900px) {
+            .workspace.canva-layout .sidebar-rail {
+                width: 70px;
+            }
+            .workspace.canva-layout .sidebar-collapse-btn,
+            .workspace.canva-layout .sidebar-nav-btn,
+            .workspace.canva-layout .sidebar-view-btn,
+            .workspace.canva-layout .sidebar-action-btn {
+                width: 56px;
+                min-width: 56px;
+                min-height: 42px;
+                padding: 4px 2px;
+            }
+            .workspace.canva-layout .sidebar-rail-label { font-size: 8px; }
+            .canvas-fab-controls {
+                right: 8px;
+                top: 46px;
+                width: 70px;
+                padding: 8px 4px;
+                transform: none;
+            }
+            .canvas-fab-btn {
+                width: 48px;
+                min-width: 48px;
+                min-height: 42px;
+                padding: 4px 2px;
+            }
+            .canvas-fab-label { font-size: 8px; }
+            .canvas-page-counter { width: 48px; }
+        }
+
+        @media (max-width: 900px) {
+            header { padding: 0 8px; }
+            .toolbar { padding: 0 10px; gap: 8px; }
+            .toolbar-group { gap: 6px; flex-wrap: nowrap; }
+            .current-file-name { max-width: 260px; }
+        }
+        @media (max-width: 1280px) {
+            .toolbar {
+                height: 50px;
+                min-height: 50px;
+                padding: 0 10px;
+                align-items: center;
+                justify-content: flex-start;
+                flex-wrap: nowrap;
+                column-gap: 10px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                scrollbar-width: thin;
+            }
+            .toolbar-group { flex: 0 0 auto; }
+            .toolbar-group-file { min-width: 180px; flex: 0 1 320px; }
+            .toolbar-group-nav { margin-left: auto; }
+            .current-file-name { max-width: 100%; }
+        }
+        @media (max-width: 900px) {
+            .toolbar-group-nav { margin-left: 0; }
+            .toolbar-group-main button,
+            .toolbar-group-nav button {
+                padding: 7px 12px;
+            }
+            #previewStatus {
+                max-width: 100%;
+            }
+        }
+        @media (max-width: 640px) {
+            :root { --sidebar-width: min(340px, 88vw); }
+            .workspace { min-width: 0; }
+            .toolbar { height: 50px; min-height: 50px; padding: 0 8px; }
+            .toolbar-group { gap: 5px; }
+            .toolbar-group-file { min-width: 120px; }
+            header h1 { max-width: 48vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+        }
+        @media (max-width: 640px) {
+            .common-inline-row { grid-template-columns: 1fr; }
+        }
+
+        /* --- UI/UX OVERRIDES --- */
+
+        /* 1. Typography Minimums */
+        .sidebar-rail-label, .canvas-fab-label, .canvas-page-counter, 
+        .adv-hint, .log, .status-pill, .drag-label::after, 
+        .label-bg-value, .label-bg-trigger-text, .modal .path-box, 
+        header .version-tag { font-size: 12px !important; }
+
+        /* 2. Drop Zone UX (Explicit Lock State) */
+        .drop-zone.disabled {
+            opacity: 1 !important;
+            position: relative;
+            background: color-mix(in srgb, var(--bg) 95%, var(--muted) 5%) !important;
+        }
+        .drop-zone.disabled::after {
+            content: "🔒 Upload PDF First";
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: color-mix(in srgb, var(--panel) 75%, transparent);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--muted);
+            border-radius: calc(var(--radius) - 2px);
+        }
+
+        /* 3. Custom Tooltips */
+        [data-tooltip] { position: relative; }
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-4px);
+            background: var(--header);
+            color: #fff;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+        [data-tooltip]:hover::after { opacity: 1; transform: translateX(-50%) translateY(-8px); }
+        .sidebar-nav-btn[data-tooltip]::after, .sidebar-action-btn[data-tooltip]::after { left: 100%; top: 50%; bottom: auto; transform: translateX(4px) translateY(-50%); }
+        .sidebar-nav-btn[data-tooltip]:hover::after, .sidebar-action-btn[data-tooltip]:hover::after { transform: translateX(8px) translateY(-50%); }
+
+        /* 5. Splitter Visibility */
+        .resizer {
+            height: 8px;
+            background: color-mix(in srgb, var(--border) 40%, transparent);
+            cursor: row-resize;
+            flex-shrink: 0;
+            transition: background 0.2s;
+            z-index: 20;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .resizer::after {
+            content: "";
+            width: 28px;
+            height: 2px;
+            background: transparent;
+            box-shadow: 0 -2px 0 var(--muted), 0 2px 0 var(--muted);
+            opacity: 0.3;
+            transition: opacity 0.2s, box-shadow 0.2s;
+        }
+        .resizer:hover, .resizer.dragging { background: color-mix(in srgb, var(--accent) 15%, transparent); }
+        .resizer:hover::after, .resizer.dragging::after { box-shadow: 0 -2px 0 var(--accent), 0 2px 0 var(--accent); opacity: 0.8; }
+
+        /* 6. Table Hover States (Remove Text Jump) */
+        tbody tr { cursor: pointer; transition: background 0.15s ease, box-shadow 0.15s ease; }
+        tbody td { transition: background 0.15s ease; }
+        tbody tr:hover td:first-child { padding-left: 12px; }
+        tbody tr:hover { background: rgba(37, 99, 235, 0.07); box-shadow: inset 3px 0 0 var(--accent); transform: none; }
+    </style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="ic-al-top" viewBox="0 0 16 16"><circle cx="8" cy="9" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="1" width="10" height="2" rx="1"/></symbol>
+    <symbol id="ic-al-bot" viewBox="0 0 16 16"><circle cx="8" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="10" height="2" rx="1"/></symbol>
+    <symbol id="ic-al-left" viewBox="0 0 16 16"><circle cx="9" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="3" width="2" height="10" rx="1"/></symbol>
+    <symbol id="ic-al-right" viewBox="0 0 16 16"><circle cx="7" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="2" height="10" rx="1"/></symbol>
+</svg>
+
+<div class="app-container">
+    <header>
+        <div class="top-bar-brand">
+            <h1>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                PDF Annotation Studio <span class="version-tag">v0</span>
+            </h1>
+        </div>
+
+        <div class="top-bar-workflow">
+            <span id="currentFileName" class="current-file-name"></span>
+        </div>
+
+        <div class="top-bar-actions">
+            <span id="previewStatus"><span class="status-pill status-idle">AWAITING FILES</span></span>
+            <div class="status-divider"></div>
+            <div class="scheme-swatches" id="schemeSwatches">
+                <button class="swatch" data-scheme="a" style="--sw:#4f46e5" onclick="setScheme('a')" data-tooltip="Indigo Slate" aria-label="Indigo Slate"></button>
+                <button class="swatch" data-scheme="b" style="--sw:#0e7490" onclick="setScheme('b')" data-tooltip="Cyan Carbon" aria-label="Cyan Carbon"></button>
+                <button class="swatch" data-scheme="c" style="--sw:#ea580c" onclick="setScheme('c')" data-tooltip="Amber Noir" aria-label="Amber Noir"></button>
+                <button class="swatch" data-scheme="d" style="--sw:#059669" onclick="setScheme('d')" data-tooltip="Emerald Ink" aria-label="Emerald Ink"></button>
+            </div>
+            <button class="ghost compact-btn theme-toggle-btn" onclick="toggleTheme()" data-tooltip="Toggle theme" aria-label="Toggle theme">
+                <span class="theme-icon" aria-hidden="true">
+                    <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"></circle><line x1="12" y1="1.5" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22.5"></line><line x1="3.5" y1="3.5" x2="5.3" y2="5.3"></line><line x1="18.7" y1="18.7" x2="20.5" y2="20.5"></line><line x1="1.5" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22.5" y2="12"></line><line x1="3.5" y1="20.5" x2="5.3" y2="18.7"></line><line x1="18.7" y1="5.3" x2="20.5" y2="3.5"></line></svg>
+                    <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"></path></svg>
+                </span>
+            </button>
+            <button class="generate-final-btn" onclick="generatePdfs()">Generate Final PDFs</button>
+        </div>
+    </header>
+
+    <div class="workspace">
+        <aside>
+            <div class="sidebar-content">
+
+                <div id="editingScope" class="editing-scope" data-tooltip="Styling & Placement settings below apply to this PDF. Switch via Master/Slave View.">
+                    Editing <strong id="editingScopeName">Master</strong> settings
+                </div>
+
+                <!-- Settings: File Inputs -->
+                <div class="accordion" id="acc-files">
+                    <div class="accordion-header" onclick="toggleAccordion('acc-files')">
+                        File Inputs <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="adv-section">
+                            <div class="adv-section-title">Master</div>
+                            <div class="drop-zone" id="dz-master" onclick="document.getElementById('masterPdfInput').click()">
+                                <div class="dz-icon"><span class="material-symbols-rounded">description</span></div>
+                                <div class="dz-text">Input Master Assembly PDF</div>
+                                <div class="dz-file-name"></div>
+                                <input type="file" id="masterPdfInput" accept=".pdf" style="display:none;">
+                            </div>
+                        </div>
+
+                        <div class="adv-section">
+                            <div class="adv-section-title">Slave</div>
+                            <div class="drop-zone" id="dz-slave" onclick="document.getElementById('slavePdfInput').click()">
+                                <div class="dz-icon"><span class="material-symbols-rounded">description</span></div>
+                                <div class="dz-text">Input Slave Assembly PDF</div>
+                                <div class="dz-file-name"></div>
+                                <input type="file" id="slavePdfInput" accept=".pdf" style="display:none;">
+                            </div>
+                        </div>
+
+                        <div class="adv-section">
+                            <div class="adv-section-title">Excel</div>
+                            <div class="drop-zone disabled" id="dz-excel" onclick="if(!this.classList.contains('disabled')) document.getElementById('excelInput').click()">
+                                <div class="dz-icon"><span class="material-symbols-rounded">table</span></div>
+                                <div class="dz-text">Input VT Pins Excel</div>
+                                <div class="dz-file-name"></div>
+                                <input type="file" id="excelInput" accept=".xlsx,.xls,.xlsm" style="display:none;" disabled>
+                            </div>
+                        </div>
+
+                        <div class="adv-section">
+                            <div class="adv-section-title">Load Project</div>
+                            <div class="form-group">
+                                <label for="projectSelect">Target Project</label>
+                                <select id="projectSelect" disabled onchange="appState.needsFitToWindow = true"><option>Awaiting Excel...</option></select>
+                            </div>
+                            <button id="parseDataBtn" disabled style="width:100%;" data-tooltip="Loads net information and renders assembly PDF">Load</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Settings: Core Styling -->
+                <div class="accordion" id="acc-style">
+                    <div class="accordion-header" onclick="toggleAccordion('acc-style')">
+                        Styling <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="adv-section">
+                            <div class="adv-section-title">Ring Setup</div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="attachTP">Ring Attachment (Test Point)</label>
+                                    <select id="attachTP" data-tooltip="Test Point to Ring Attachment" style="display:none;">
+                                        <option value="top">Top</option>
+                                        <option value="bottom">Bottom</option>
+                                        <option value="left">Left</option>
+                                        <option value="right">Right</option>
+                                    </select>
+                                    <div class="align-select attach-align" data-target="attachTP">
+                                        <button type="button" class="align-current" id="attachTPPicker" aria-haspopup="listbox" aria-expanded="false" data-tooltip="Test Point to Ring Attachment">
+                                            <svg class="al-ic" aria-hidden="true"><use href="#ic-al-top"></use></svg>
+                                            <span class="align-current-label">Top</span>
+                                            <span class="caret">▼</span>
+                                        </button>
+                                        <div class="align-menu" role="listbox" aria-label="Test Point to Ring Attachment">
+                                            <button type="button" data-val="top" role="option">
+                                                <svg class="al-ic" aria-hidden="true"><use href="#ic-al-top"></use></svg>
+                                                <span class="opt-label">Top</span>
+                                            </button>
+                                            <button type="button" data-val="bottom" role="option">
+                                                <svg class="al-ic" aria-hidden="true"><use href="#ic-al-bot"></use></svg>
+                                                <span class="opt-label">Bottom</span>
+                                            </button>
+                                            <button type="button" data-val="left" role="option">
+                                                <svg class="al-ic" aria-hidden="true"><use href="#ic-al-left"></use></svg>
+                                                <span class="opt-label">Left</span>
+                                            </button>
+                                            <button type="button" data-val="right" role="option">
+                                                <svg class="al-ic" aria-hidden="true"><use href="#ic-al-right"></use></svg>
+                                                <span class="opt-label">Right</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label id="ringColorLabel">Ring Color (RGBA)</label>
+                                    <div class="label-bg-picker-wrapper" id="ringColorPickerWrapper">
+                                        <button type="button" class="label-bg-trigger-btn" id="ringColorTriggerBtn" data-tooltip="Choose ring color" aria-labelledby="ringColorLabel ringColorTriggerText">
+                                            <span class="label-bg-swatch"><span class="label-bg-swatch-color" id="ringColorSwatchColor"></span></span>
+                                            <span class="label-bg-trigger-text" id="ringColorTriggerText">Pick Color</span>
+                                        </button>
+                                        <div class="label-bg-panel" id="ringColorPanel">
+                                            <div class="label-bg-color-space" id="ringColorSpace">
+                                                <div class="label-bg-space-base" id="ringColorSpaceBase"></div>
+                                                <div class="label-bg-space-sat"></div>
+                                                <div class="label-bg-space-val"></div>
+                                                <div class="label-bg-pointer" id="ringColorPointer"></div>
+                                            </div>
+                                            <div class="label-bg-slider label-bg-hue" id="ringColorHueSlider"><div class="label-bg-slider-thumb" id="ringColorHueThumb"></div></div>
+                                            <div class="label-bg-slider label-bg-alpha-wrap" id="ringColorAlphaWrap"><div class="label-bg-slider" id="ringColorAlphaSlider"><div class="label-bg-slider-thumb" id="ringColorAlphaThumb"></div></div></div>
+                                        </div>
+                                        <input type="hidden" id="circleColorRgba" value="#FF0000FF">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="circleDiameter">Test Point Ring Diameter</label>
+                                    <input type="number" id="circleDiameter" value="11" step="0.1" data-tooltip="Max ring diameter for Test Point (non-PAX) nets">
+                                </div>
+                                <div class="form-group">
+                                    <label for="circleDiameterPax">Connector Ring Diameter</label>
+                                    <input type="number" id="circleDiameterPax" value="11" step="0.1" data-tooltip="Max ring diameter for Connector (PAX) nets">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="adv-section">
+                            <div class="adv-section-title">Label Appearance</div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="labelFontSize">Label Font Size</label>
+                                    <input type="number" id="labelFontSize" value="4.5" step="0.5">
+                                </div>
+                                <div class="form-group">
+                                    <label id="labelBgColorLabel">Label Background (RGBA)</label>
+                                    <div class="label-bg-picker-wrapper" id="labelBgPickerWrapper">
+                                        <button type="button" class="label-bg-trigger-btn" id="labelBgTriggerBtn" data-tooltip="Choose label background color" aria-labelledby="labelBgColorLabel labelBgTriggerText">
+                                            <span class="label-bg-swatch"><span class="label-bg-swatch-color" id="labelBgSwatchColor"></span></span>
+                                            <span class="label-bg-trigger-text" id="labelBgTriggerText">Pick Color</span>
+                                        </button>
+                                        <div class="label-bg-panel" id="labelBgPanel">
+                                            <div class="label-bg-color-space" id="labelBgColorSpace">
+                                                <div class="label-bg-space-base" id="labelBgSpaceBase"></div>
+                                                <div class="label-bg-space-sat"></div>
+                                                <div class="label-bg-space-val"></div>
+                                                <div class="label-bg-pointer" id="labelBgPointer"></div>
+                                            </div>
+                                            <div class="label-bg-slider label-bg-hue" id="labelBgHueSlider"><div class="label-bg-slider-thumb" id="labelBgHueThumb"></div></div>
+                                            <div class="label-bg-slider label-bg-alpha-wrap" id="labelBgAlphaWrap"><div class="label-bg-slider" id="labelBgAlphaSlider"><div class="label-bg-slider-thumb" id="labelBgAlphaThumb"></div></div></div>
+                                        </div>
+                                        <input type="hidden" id="labelBgRgba" value="#FFFFFFFF">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings: Advanced Layout -->
+                <div class="accordion collapsed" id="acc-adv">
+                    <div class="accordion-header" onclick="toggleAccordion('acc-adv')">
+                        Advanced Layout <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="adv-section">
+                            <div class="adv-section-title">Label Fine-Tuning</div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="circleWidth">Ring Stroke</label>
+                                    <input type="number" id="circleWidth" value="0.9" step="0.1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="circleScale">Ring Scale</label>
+                                    <input type="number" id="circleScale" value="1.9" step="0.1" data-tooltip="Ring size relative to the detected test point">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="labelWrapChars">Label Wrap (Chars)</label>
+                                    <input type="number" id="labelWrapChars" value="7">
+                                </div>
+                                <div class="form-group">
+                                    <label for="labelLineSpacing">Label Line Spacing</label>
+                                    <input type="number" id="labelLineSpacing" value="0.7" step="0.1" data-tooltip="Vertical spacing between wrapped label lines">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bgPaddingX">Label Background Padding X</label>
+                                    <input type="number" id="bgPaddingX" value="0.2" step="0.1" data-tooltip="Label background horizontal padding">
+                                </div>
+                                <div class="form-group">
+                                    <label for="bgPaddingY">Label Background Padding Y</label>
+                                    <input type="number" id="bgPaddingY" value="0.2" step="0.1" data-tooltip="Label background vertical padding">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="adv-section">
+                            <div class="adv-section-title">Placement</div>
+                            
+                            <div class="offset-stack">
+                                <div class="offset-card">
+                                    <p class="offset-card-title">Test Point Label Offset</p>
+                                    <div class="offset-grid">
+                                        <div class="offset-cell"><span class="offset-axis">X</span><input type="number" id="offsetX_TP" value="0" step="0.1" data-tooltip="Test Point Label Offset X"></div>
+                                        <div class="offset-cell"><span class="offset-axis">Y</span><input type="number" id="offsetY_TP" value="0" step="0.1" data-tooltip="Test Point Label Offset Y"></div>
+                                    </div>
+                                </div>
+                                <div class="offset-card">
+                                    <p class="offset-card-title">Connector Upper Pins Offset</p>
+                                    <div class="offset-grid">
+                                        <div class="offset-cell"><span class="offset-axis">X</span><input type="number" id="offsetX_SecondHalf" value="0" step="0.1" data-tooltip="Upper Pins Offset X"></div>
+                                        <div class="offset-cell"><span class="offset-axis">Y</span><input type="number" id="offsetY_SecondHalf" value="0" step="0.1" data-tooltip="Upper Pins Offset Y"></div>
+                                    </div>
+                                </div>
+                                <div class="offset-card">
+                                    <p class="offset-card-title">Connector Lower Pins Offset</p>
+                                    <div class="offset-grid">
+                                        <div class="offset-cell"><span class="offset-axis">X</span><input type="number" id="offsetX_FirstHalf" value="0" step="0.1" data-tooltip="Lower Pins Offset X"></div>
+                                        <div class="offset-cell"><span class="offset-axis">Y</span><input type="number" id="offsetY_FirstHalf" value="0" step="0.1" data-tooltip="Lower Pins Offset Y"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="adv-section">
+                            <div class="adv-section-title">Circle Offsets</div>
+                            <div class="offset-stack">
+                                <div class="offset-card">
+                                    <p class="offset-card-title">Test Point Ring Offset</p>
+                                    <div class="offset-grid">
+                                        <div class="offset-cell"><span class="offset-axis">X</span><input type="number" id="circleOffsetX_TP" value="0" step="0.1" data-tooltip="Nudge Test Point rings horizontally off the detected point"></div>
+                                        <div class="offset-cell"><span class="offset-axis">Y</span><input type="number" id="circleOffsetY_TP" value="0" step="0.1" data-tooltip="Nudge Test Point rings vertically off the detected point"></div>
+                                    </div>
+                                </div>
+                                <div class="offset-card">
+                                    <p class="offset-card-title">Connector Ring Offset</p>
+                                    <div class="offset-grid">
+                                        <div class="offset-cell"><span class="offset-axis">X</span><input type="number" id="circleOffsetX_PAX" value="0" step="0.1" data-tooltip="Nudge Connector rings horizontally off the detected point"></div>
+                                        <div class="offset-cell"><span class="offset-axis">Y</span><input type="number" id="circleOffsetY_PAX" value="0" step="0.1" data-tooltip="Nudge Connector rings vertically off the detected point"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <input type="file" id="importPresetFile" accept=".json" style="display:none;" onchange="importPreset(event)">
+
+        </aside>
+        <div class="sidebar-divider" id="sidebarDivider" data-tooltip="Drag to resize panel"><div class="resizer" style="height: 100%; width: 100%; display: none;"></div></div>
+
+        <main id="mainPanel">
+            <div class="preview-area" id="previewCanvas">
+                <div id="imgContainer">
+                    <div class="placeholder awaiting-placeholder" id="previewPlaceholder">...</div>
+                    <div id="overlayContainer"></div>
+                </div>
+
+                <div class="busy-overlay" id="busyOverlay">
+                    <div class="busy-spinner"></div>
+                    <span class="busy-text" id="busyText">Processing…</span>
+                </div>
+            </div> <div class="resizer" id="splitter"></div>
+
+            <div class="canvas-fab-controls" aria-label="Canvas controls">
+                <button class="canvas-fab-btn" id="btnMaster" onclick="switchPdf('master')" data-tooltip="Master preview" aria-label="Master preview"><span class="material-symbols-rounded">flip_to_front</span><span class="canvas-fab-label">Master</span></button>
+                <button class="canvas-fab-btn" id="btnSlave" onclick="switchPdf('slave')" data-tooltip="Slave preview" aria-label="Slave preview"><span class="material-symbols-rounded">flip_to_back</span><span class="canvas-fab-label">Slave</span></button>
+                <div class="canvas-fab-sep"></div>
+                <button class="canvas-fab-btn" onclick="triggerFitToWindow()" data-tooltip="Fit to screen" aria-label="Fit to screen"><span class="material-symbols-rounded">fit_screen</span></button>
+                <div class="canvas-fab-sep"></div>
+                <div class="canvas-zoom-group">
+                    <button class="canvas-fab-btn" onclick="prevPage()" data-tooltip="Previous page" aria-label="Previous page"><span class="material-symbols-rounded">navigate_before</span></button>
+                    <span id="pageLabel" class="canvas-page-counter">0 / 0</span>
+                    <span id="zoomLabel" class="canvas-page-counter" style="cursor:pointer; margin-top: 4px;" onclick="resetZoom()" data-tooltip="Reset Zoom">100%</span>
+                    <button class="canvas-fab-btn" onclick="nextPage()" data-tooltip="Next page" aria-label="Next page"><span class="material-symbols-rounded">navigate_next</span></button>
+                </div>
+                <div class="canvas-fab-sep"></div>
+                <button class="canvas-fab-btn" id="undoBtnCanvas" onclick="undo()" data-tooltip="Undo" aria-label="Undo" disabled><span class="material-symbols-rounded">undo</span></button>
+                <button class="canvas-fab-btn" id="redoBtnCanvas" onclick="redo()" data-tooltip="Redo" aria-label="Redo" disabled><span class="material-symbols-rounded">redo</span></button>
+            </div>
+            
+            <div class="bottom-panel" id="tablesPanel">
+                <div class="tabs">
+                    <button class="tab active" data-tab="masterTable">Master Nets <span class="row-count" id="masterCount">0</span></button>
+                    <button class="tab" data-tab="slaveTable">Slave Nets <span class="row-count" id="slaveCount">0</span></button>
+                    <button class="tab" data-tab="skippedTable">Orphaned Data <span class="row-count" id="skippedCount">0</span></button>
+                    <button class="tab" data-tab="logsTable">Execution Logs</button>
+                </div>
+
+                <div id="masterTable" class="table-view active">
+                    <table>
+                        <thead><tr><th>Identified Test points</th><th>Net labels</th></tr></thead>
+                        <tbody id="masterTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="slaveTable" class="table-view">
+                    <table>
+                        <thead><tr><th>Identified Test points</th><th>Net labels</th></tr></thead>
+                        <tbody id="slaveTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="skippedTable" class="table-view">
+                    <table>
+                        <thead><tr><th>Excel Row</th><th>Requested Test Point</th><th>Net</th><th>Failure Reason</th></tr></thead>
+                        <tbody id="skippedTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div id="logsTable" class="table-view log-container">
+                    <div id="logOutput"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+
+
+<script>
+const appState = {
+    currentPdf: "master", currentPage: 1, pageCount: 0, zoomLevel: 1, selectedProject: null,
+    categorized: { master: [], slave: [], skipped: [] }, locations: {}, pdfWidth: 1, pdfHeight: 1,
+    needsFitToWindow: false, manualOffsets: { master: {}, slave: {} }, filesUploaded: { master: false, slave: false, excel: false },
+    fileNames: { master: null, slave: null }, uiConfig: { master: null, slave: null }, pageCountByPdf: { master: 0, slave: 0 },
+    defaultUiConfig: null
+};
+function saveWorkspace() {
+    const workspace = { uiConfig: appState.uiConfig, offsets: appState.manualOffsets };
+    localStorage.setItem("pdfAnnotationWorkspace", JSON.stringify(workspace));
+}
+
+function loadWorkspace() {
+    try {
+        const stored = localStorage.getItem("pdfAnnotationWorkspace");
+        if (stored) {
+            const data = JSON.parse(stored);
+            if (data.uiConfig) appState.uiConfig = data.uiConfig;
+            if (data.offsets) appState.manualOffsets = data.offsets;
+            writeControls(appState.uiConfig[appState.currentPdf]);
+        }
+    } catch (e) { console.warn("Failed to restore workspace."); }
+}
+function updateHeaderFileName() {
+    const el = document.getElementById("currentFileName"); if (!el) return;
+    const name = appState.fileNames[appState.currentPdf];
+    if (name) { el.innerHTML = `<span class="cfn-icon">📄</span>${escapeHtml(name)}`; el.title = name; }
+    else { el.innerHTML = ""; el.title = ""; }
+}
+
+function setupSidebarShell() {
+    const workspace = document.querySelector(".workspace");
+    const aside = document.querySelector("aside");
+    const settingsContent = document.querySelector(".sidebar-content");
+    const tablesPanel = document.getElementById("tablesPanel");
+    const divider = document.getElementById("sidebarDivider");
+    if (!workspace || !aside || !settingsContent || !tablesPanel) return;
+
+    workspace.classList.add("canva-layout");
+
+    const rail = document.createElement("div");
+    rail.className = "sidebar-rail";
+    rail.innerHTML = `
+        <button class="sidebar-collapse-btn" id="sidebarCollapseBtn" data-tooltip="Collapse sidebar" aria-label="Collapse sidebar"><span class="material-symbols-rounded">left_panel_close</span><span class="sidebar-rail-label">Panel</span></button>
+        <div class="sidebar-rail-sep"></div>
+        <button class="sidebar-nav-btn" data-target="acc-files" data-tooltip="Inputs" aria-label="Inputs"><span class="material-symbols-rounded">upload_file</span><span class="sidebar-rail-label">Inputs</span></button>
+        <button class="sidebar-nav-btn" data-target="acc-style" data-tooltip="Styling" aria-label="Styling"><span class="material-symbols-rounded">palette</span><span class="sidebar-rail-label">Style</span></button>
+        <button class="sidebar-nav-btn" data-target="acc-adv" data-tooltip="Advanced layout" aria-label="Advanced layout"><span class="material-symbols-rounded">tune</span><span class="sidebar-rail-label">Advanced</span></button>
+        <div class="sidebar-rail-sep"></div>
+        <button class="sidebar-nav-btn" data-target="masterTable" data-tooltip="Master nets" aria-label="Master nets"><span class="material-symbols-rounded">table_rows</span><span class="sidebar-rail-label">M-Nets</span></button>
+        <button class="sidebar-nav-btn" data-target="slaveTable" data-tooltip="Slave nets" aria-label="Slave nets"><span class="material-symbols-rounded">view_list</span><span class="sidebar-rail-label">S-Nets</span></button>
+        <button class="sidebar-nav-btn" data-target="skippedTable" data-tooltip="Orphaned data" aria-label="Orphaned data"><span class="material-symbols-rounded">report</span><span class="sidebar-rail-label">Orphan</span></button>
+        <button class="sidebar-nav-btn" data-target="logsTable" data-tooltip="Execution logs" aria-label="Execution logs"><span class="material-symbols-rounded">article</span><span class="sidebar-rail-label">Logs</span></button>
+        <div class="sidebar-rail-sep"></div>
+        <button class="sidebar-action-btn" id="presetImportBtn" data-tooltip="Upload preset" aria-label="Upload preset"><span class="material-symbols-rounded">upload</span><span class="sidebar-rail-label">Upload</span></button>
+        <button class="sidebar-action-btn" id="presetExportBtn" data-tooltip="Download preset" aria-label="Download preset"><span class="material-symbols-rounded">download</span><span class="sidebar-rail-label">Download</span></button>
+        <button class="sidebar-action-btn" id="resetBtnRail" data-tooltip="Reset" aria-label="Reset"><span class="material-symbols-rounded">restart_alt</span><span class="sidebar-rail-label">Reset</span></button>
+    `;
+
+    const host = document.createElement("div");
+    host.className = "sidebar-panel-host";
+
+    const settingsPanel = document.createElement("section");
+    settingsPanel.className = "sidebar-panel sidebar-panel-settings";
+    settingsPanel.id = "sidebarSettingsPanel";
+    settingsPanel.appendChild(settingsContent);
+
+    const dataPanel = document.createElement("section");
+    dataPanel.className = "sidebar-panel sidebar-panel-data";
+    dataPanel.id = "sidebarDataPanel";
+    dataPanel.appendChild(tablesPanel);
+
+    host.appendChild(settingsPanel);
+    host.appendChild(dataPanel);
+    aside.prepend(host);
+    aside.prepend(rail);
+
+    const tabs = tablesPanel.querySelector(".tabs");
+    if (tabs) tabs.style.display = "none";
+
+    const masterBtn = document.getElementById("btnMaster");
+    const slaveBtn = document.getElementById("btnSlave");
+    const importBtn = rail.querySelector("#presetImportBtn");
+    const exportBtn = rail.querySelector("#presetExportBtn");
+    const resetBtn = rail.querySelector("#resetBtnRail");
+    if (masterBtn) masterBtn.addEventListener("click", () => switchPdf("master"));
+    if (slaveBtn) slaveBtn.addEventListener("click", () => switchPdf("slave"));
+    if (importBtn) importBtn.addEventListener("click", () => document.getElementById("importPresetFile").click());
+    if (exportBtn) exportBtn.addEventListener("click", () => exportPreset());
+    if (resetBtn) resetBtn.addEventListener("click", () => resetCurrentViewSettings());
+    if (masterBtn) masterBtn.classList.toggle("active", appState.currentPdf === "master");
+    if (slaveBtn) slaveBtn.classList.toggle("active", appState.currentPdf === "slave");
+
+    const settingAccordions = ["acc-files", "acc-style", "acc-adv"];
+    const activateTableView = (tableId) => {
+        document.querySelectorAll(".table-view").forEach(v => v.classList.remove("active"));
+        const nextView = document.getElementById(tableId);
+        if (nextView) nextView.classList.add("active");
+        document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === tableId));
+        if (AUTO_SCROLL_TABS.has(tableId)) scheduleAutoScroll(tableId);
+    };
+
+    const activateSidebarTarget = (target) => {
+        const isSettings = settingAccordions.includes(target);
+        settingsPanel.classList.toggle("active", isSettings);
+        dataPanel.classList.toggle("active", !isSettings);
+
+        if (isSettings) {
+            settingAccordions.forEach(id => {
+                const acc = document.getElementById(id);
+                if (!acc) return;
+                const on = id === target;
+                acc.style.display = on ? "" : "none";
+                acc.classList.toggle("collapsed", !on);
+            });
+            updateSidebarContentOverflow();
+        } else {
+            activateTableView(target);
+        }
+
+        rail.querySelectorAll(".sidebar-nav-btn").forEach(btn => {
+            btn.classList.toggle("active", btn.dataset.target === target);
+        });
+    };
+
+    rail.querySelectorAll(".sidebar-nav-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            if (workspace.classList.contains("sidebar-collapsed")) {
+                workspace.classList.remove("sidebar-collapsed");
+                localStorage.setItem("sidebarCollapsed", "0");
+            }
+            activateSidebarTarget(btn.dataset.target);
+        });
+    });
+
+    const collapseBtn = document.getElementById("sidebarCollapseBtn");
+    if (collapseBtn) {
+        collapseBtn.addEventListener("click", () => {
+            const willCollapse = !workspace.classList.contains("sidebar-collapsed");
+            workspace.classList.toggle("sidebar-collapsed", willCollapse);
+            localStorage.setItem("sidebarCollapsed", willCollapse ? "1" : "0");
+            collapseBtn.innerHTML = willCollapse
+                ? '<span class="material-symbols-rounded">left_panel_open</span>'
+                : '<span class="material-symbols-rounded">left_panel_close</span>';
+            collapseBtn.setAttribute('data-tooltip', willCollapse ? "Expand sidebar" : "Collapse sidebar");
+            if (divider) divider.style.display = willCollapse ? "none" : "";
+        });
+    }
+
+    const collapsed = localStorage.getItem("sidebarCollapsed") === "1";
+    if (collapsed) {
+        workspace.classList.add("sidebar-collapsed");
+        if (collapseBtn) {
+            collapseBtn.innerHTML = '<span class="material-symbols-rounded">left_panel_open</span>';
+            collapseBtn.setAttribute('data-tooltip', "Expand sidebar");
+        }
+        if (divider) divider.style.display = "none";
+    }
+
+    activateSidebarTarget("acc-files");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    initTheme();
+    document.getElementById("excelInput").value = "";
+    document.getElementById("masterPdfInput").value = "";
+    document.getElementById("slavePdfInput").value = "";
+    setupUploads(); setupTabs(); setupMouseWheelZoom(); setupLiveConfigListeners(); setupUndoRedoShortcuts(); setupAlignToggles();
+    setupSidebarShell();
+    setupSplitter();
+    setupSidebarDivider();
+
+    // Seed independent Master/Slave config snapshots from the default control values
+    const _defaults = readControls();
+    appState.defaultUiConfig = { ..._defaults };
+    appState.uiConfig.master = { ..._defaults };
+    appState.uiConfig.slave = { ..._defaults };
+    updateEditingChip();
+
+    document.getElementById("parseDataBtn").addEventListener("click", () => { appState.needsFitToWindow = true; parseData(); });
+    addLog("Application initialized. Please upload your Assembly PDF first.", "success");
+    pushHistory(); // baseline snapshot of default config + empty offsets
+    requestAnimationFrame(updateSidebarContentOverflow);
+    saveWorkspace();
+    loadWorkspace();
+});
+
+function unlockExcelUi() {
+    const dzExcel = document.getElementById("dz-excel");
+    const excelInput = document.getElementById("excelInput");
+    if (dzExcel) {
+        dzExcel.classList.remove("disabled");
+        // Removed tooltip setting on dropzone as we have explicit ::after label
+    }
+    if (excelInput) excelInput.disabled = false;
+}
+
+function setExcelDropZoneName(name) {
+    const dz = document.getElementById("dz-excel");
+    if (!dz) return;
+    const nameEl = dz.querySelector(".dz-file-name");
+    if (!nameEl) return;
+    const text = (name || "").trim();
+    if (!text) {
+        nameEl.textContent = "";
+        nameEl.title = "";
+        nameEl.style.display = "none";
+        return;
+    }
+    const normalized = text.replace(/\\/g, "/");
+    const fileName = normalized.split("/").filter(Boolean).pop() || text;
+    nameEl.textContent = fileName;
+    nameEl.title = fileName;
+    nameEl.style.display = "-webkit-box";
+    requestAnimationFrame(updateSidebarContentOverflow);
+}
+
+function applyProjectList(projects) {
+    const select = document.getElementById("projectSelect");
+    const parseBtn = document.getElementById("parseDataBtn");
+    select.innerHTML = "";
+    if (!projects || !projects.length) {
+        select.innerHTML = "<option>No projects detected</option>";
+        select.disabled = true;
+        parseBtn.disabled = true;
+        return false;
+    }
+    projects.forEach(p => {
+        const opt = document.createElement("option");
+        opt.value = p;
+        opt.textContent = p;
+        select.appendChild(opt);
+    });
+    select.disabled = false;
+    select.selectedIndex = 0;
+    parseBtn.disabled = false;
+    return true;
+}
+
+function toggleAccordion(id) {
+    const acc = document.getElementById(id);
+    if (!acc) return;
+    acc.classList.toggle("collapsed");
+
+    updateSidebarContentOverflow();
+    setTimeout(updateSidebarContentOverflow, 60);
+    setTimeout(updateSidebarContentOverflow, 180);
+    setTimeout(updateSidebarContentOverflow, 380);
+}
+function updateSidebarContentOverflow() {
+    const content = document.querySelector(".sidebar-content");
+    if (!content) return;
+
+    requestAnimationFrame(() => {
+        const overflowTolerancePx = 12;
+        const needsScroll = (content.scrollHeight - content.clientHeight) > overflowTolerancePx;
+        content.classList.toggle("can-scroll", needsScroll);
+    });
+}
+window.addEventListener("resize", updateSidebarContentOverflow);
+
+function _markActiveSwatch(scheme) {
+    document.querySelectorAll("#schemeSwatches .swatch").forEach(b => b.classList.toggle("active", b.dataset.scheme === scheme));
+}
+function initTheme() {
+    document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "light");
+    const scheme = localStorage.getItem("scheme") || "a";
+    document.documentElement.setAttribute("data-scheme", scheme);
+    _markActiveSwatch(scheme);
+}
+function setScheme(scheme) {
+    document.documentElement.setAttribute("data-scheme", scheme);
+    localStorage.setItem("scheme", scheme);
+    _markActiveSwatch(scheme);
+}
+function toggleTheme() {
+    const next = (document.documentElement.getAttribute("data-theme") || "light") === "light" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", next); localStorage.setItem("theme", next);
+}
+
+function showToast(message, type = "info") {
+    const container = document.getElementById("toastContainer"), toast = document.createElement("div");
+    toast.className = `toast ${type}`; toast.textContent = message; container.appendChild(toast);
+    let timer = setTimeout(() => toast.remove(), 3500);
+    toast.addEventListener("click", () => { clearTimeout(timer); toast.remove(); });
+    toast.addEventListener("mouseenter", () => clearTimeout(timer));
+    toast.addEventListener("mouseleave", () => { timer = setTimeout(() => toast.remove(), 1200); });
+}
+
+function b64ToBlob(b64, mime) {
+    const bin = atob(b64), len = bin.length, bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i);
+    return new Blob([bytes], { type: mime });
+}
+async function saveGeneratedFile(filename, blob) {
+    if (window.showSaveFilePicker) {
+        try {
+            const handle = await window.showSaveFilePicker({ suggestedName: filename, types: [{ description: "PDF document", accept: { "application/pdf": [".pdf", ".PDF"] } }] });
+            const writable = await handle.createWritable(); await writable.write(blob); await writable.close();
+            return true;
+        } catch (err) { if (err && err.name === "AbortError") return false; }
+    }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = filename; a.click();
+    await new Promise(resolve => setTimeout(resolve, 900));
+    URL.revokeObjectURL(a.href);
+    return true;
+}
+
+const LOG_APPEND_INTERVAL_MS = 100;
+const logQueue = [];
+let logDrainTimer = null;
+
+function appendLogEntry(message, type = "info") {
+    const output = document.getElementById("logOutput"), entry = document.createElement("div");
+    entry.className = `log ${type}`; entry.textContent = `[${new Date().toLocaleTimeString([], { hour12: false })}] ${message}`;
+    output.appendChild(entry); scheduleAutoScroll("logsTable");
+}
+
+function drainLogQueue() {
+    if (!logQueue.length) {
+        logDrainTimer = null;
+        return;
+    }
+    const { message, type } = logQueue.shift();
+    appendLogEntry(message, type);
+    logDrainTimer = setTimeout(drainLogQueue, LOG_APPEND_INTERVAL_MS);
+}
+
+function addLog(message, type = "info") {
+    logQueue.push({ message, type });
+    if (!logDrainTimer) {
+        drainLogQueue();
+    }
+}
+
+const AUTO_SCROLL_DELAY_MS = 100;
+const autoScrollStates = new Map();
+const AUTO_SCROLL_TABS = new Set(["logsTable", "masterTable", "slaveTable"]);
+
+function scheduleAutoScroll(target) {
+    const el = typeof target === "string" ? document.getElementById(target) : target;
+    if (!el) return;
+
+    const state = autoScrollStates.get(el);
+    if (state) {
+        state.pending = true;
+        return;
+    }
+
+    const nextTick = () => {
+        el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+        const current = autoScrollStates.get(el);
+        if (current && current.pending) {
+            current.pending = false;
+            setTimeout(nextTick, AUTO_SCROLL_DELAY_MS);
+            return;
+        }
+        autoScrollStates.delete(el);
+    };
+
+    autoScrollStates.set(el, { pending: false });
+    setTimeout(nextTick, AUTO_SCROLL_DELAY_MS);
+}
+
+function showStatus(target, status, text) {
+    const el = document.getElementById(target); let cls = "status-success";
+    if (status === "PARTIAL_SUCCESS" || status === "NO_DATA") cls = "status-warning";
+    if (status === "FAILURE" || status === "ERROR") cls = "status-error";
+    el.innerHTML = `<span class="status-pill ${cls}">${text || status}</span>`;
+}
+
+function escapeHtml(value) { if (value == null) return ""; return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
+
+let busyCount = 0;
+function setBusy(on, text) {
+    busyCount = Math.max(0, busyCount + (on ? 1 : -1));
+    const overlay = document.getElementById("busyOverlay"); if (!overlay) return;
+    if (on && text) document.getElementById("busyText").textContent = text;
+    overlay.classList.toggle("active", busyCount > 0);
+}
+
+function setupSplitter() {
+    const splitter = document.getElementById("splitter"), panel = document.getElementById("tablesPanel"), main = document.getElementById("mainPanel");
+    if (!splitter || !panel || !main) return;
+    let isDragging = false;
+    splitter.addEventListener("mousedown", () => { isDragging = true; splitter.classList.add("dragging"); document.body.style.cursor = "row-resize"; });
+    document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return; let newHeight = main.getBoundingClientRect().bottom - e.clientY;
+        panel.style.height = `${Math.min(Math.max(newHeight, 40), main.getBoundingClientRect().height - 100)}px`;
+    });
+    document.addEventListener("mouseup", () => { if (isDragging) { isDragging = false; splitter.classList.remove("dragging"); document.body.style.cursor = "default"; } });
+}
+
+function readControls() {
+    const v = {};
+    CONFIG_CONTROL_IDS.forEach(id => { const el = document.getElementById(id); if (!el) return; v[id] = (el.type === "checkbox") ? el.checked : el.value; });
+    return v;
+}
+function writeControls(values) {
+    if (!values) return;
+    CONFIG_CONTROL_IDS.forEach(id => {
+        const el = document.getElementById(id); if (!el || values[id] === undefined) return;
+        if (el.type === "checkbox") el.checked = values[id]; else el.value = values[id];
+    });
+    refreshAlignToggles();
+    syncRingColorPickerFromInput();
+    syncLabelBgPickerFromInput();
+}
+
+const ALIGN_ICON = { top: "top", bottom: "bot", left: "left", right: "right" };
+function refreshAlignToggles() {
+    const ALIGN_LABEL = { top: "Top", bottom: "Bottom", left: "Left", right: "Right" };
+    document.querySelectorAll(".align-select").forEach(group => {
+        const input = document.getElementById(group.dataset.target); if (!input) return;
+        group.dataset.active = input.value;
+        const use = group.querySelector(".align-current .al-ic use");
+        const label = group.querySelector(".align-current .align-current-label");
+        if (use) use.setAttribute("href", "#ic-al-" + (ALIGN_ICON[input.value] || "top"));
+        if (label) label.textContent = ALIGN_LABEL[input.value] || "Top";
+        group.querySelectorAll(".align-menu button").forEach(b => b.classList.toggle("on", b.dataset.val === input.value));
+    });
+}
+function closeAlignMenus(except) {
+    document.querySelectorAll(".align-select.open").forEach(g => {
+        if (g === except) return;
+        g.classList.remove("open");
+        const c = g.querySelector(".align-current"); if (c) c.setAttribute("aria-expanded", "false");
+    });
+}
+function setupAlignToggles() {
+    document.querySelectorAll(".align-select").forEach(group => {
+        const input = document.getElementById(group.dataset.target); if (!input) return;
+        const current = group.querySelector(".align-current");
+        current.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const willOpen = !group.classList.contains("open");
+            closeAlignMenus(group);
+            group.classList.toggle("open", willOpen);
+            current.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        });
+        group.querySelectorAll(".align-menu button").forEach(b => {
+            b.addEventListener("click", (e) => {
+                e.stopPropagation();
+                input.value = b.dataset.val;
+                group.classList.remove("open");
+                current.setAttribute("aria-expanded", "false");
+                refreshAlignToggles();
+                input.dispatchEvent(new Event("change"));
+            });
+        });
+    });
+    document.addEventListener("click", () => closeAlignMenus(null));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAlignMenus(null); });
+    refreshAlignToggles();
+}
+function buildConfig(v) {
+    v = v || {};
+    const num = (id, def) => {
+        const x = v[id];
+        if (x === undefined || x === "") return def;
+        const parsed = parseFloat(x);
+        return Number.isFinite(parsed) ? parsed : def;
+    };
+    const intg = (id, def) => {
+        const x = v[id];
+        if (x === undefined || x === "") return def;
+        const parsed = parseInt(x, 10);
+        return Number.isFinite(parsed) ? parsed : def;
+    };
+    const str = (id, def) => { const x = v[id]; return x === undefined ? def : x; };
+    const parseRgbaColor = (raw) => {
+        let s = String(raw || "#ffffffff").trim();
+        if (s.startsWith("#")) s = s.slice(1);
+        if (s.length === 3 || s.length === 4) s = s.split("").map(ch => ch + ch).join("");
+        if (s.length === 6) s += "ff";
+        if (s.length !== 8) s = "ffffffff";
+        const rgb = `#${s.slice(0, 6)}`;
+        const a = parseInt(s.slice(6, 8), 16) / 255;
+        return { rgb, alpha: Number.isFinite(a) ? a : 1.0 };
+    };
+    const ring = parseRgbaColor(str("circleColorRgba", str("circleColor", "#ff0000")));
+    const bg = parseRgbaColor(str("labelBgRgba", "#ffffffff"));
+    return {
+        CIRCLE_MAX_DIAMETER: num("circleDiameter", 11), CIRCLE_MAX_DIAMETER_PAX: num("circleDiameterPax", 11), RED: ring.rgb,
+        CIRCLE_LINE_WIDTH: num("circleWidth", 0.9), LABEL_FONT_SIZE: num("labelFontSize", 4.5),
+        LABEL_BG_COLOR_HEX: bg.rgb, LABEL_WRAP_CHARS: intg("labelWrapChars", 7),
+        LABEL_BG_ALPHA: bg.alpha,
+        LABEL_OFFSET_X_PAX_FIRST_HALF: num("offsetX_FirstHalf", 0), LABEL_OFFSET_Y_PAX_FIRST_HALF: num("offsetY_FirstHalf", 0),
+        LABEL_OFFSET_X_PAX_SECOND_HALF: num("offsetX_SecondHalf", 0), LABEL_OFFSET_Y_PAX_SECOND_HALF: num("offsetY_SecondHalf", 0),
+        CIRCLE_SCALE: num("circleScale", 1.9), LABEL_LINE_SPACING: num("labelLineSpacing", 0.7),
+        CIRCLE_OFFSET_X_PAX: num("circleOffsetX_PAX", 0), CIRCLE_OFFSET_Y_PAX: num("circleOffsetY_PAX", 0),
+        CIRCLE_OFFSET_X_TP: num("circleOffsetX_TP", 0), CIRCLE_OFFSET_Y_TP: num("circleOffsetY_TP", 0),
+        LABEL_OFFSET_X_TP: num("offsetX_TP", 0), LABEL_OFFSET_Y_TP: num("offsetY_TP", 0),
+        LABEL_BG_ENABLED: bg.alpha > 0,
+        LABEL_BG_PADDING_X: num("bgPaddingX", 0.2), LABEL_BG_PADDING_Y: num("bgPaddingY", 0.2),
+        LABEL_ATTACH_TP: str("attachTP", "top"),
+    };
+}
+
+function syncActiveConfig() {
+    if (!appState.uiConfig) appState.uiConfig = { master: null, slave: null };
+    appState.uiConfig[appState.currentPdf] = readControls();
+    return appState.uiConfig[appState.currentPdf];
+}
+function getConfigFor(pdf) {
+    if (pdf === appState.currentPdf) syncActiveConfig();
+    return buildConfig(appState.uiConfig ? appState.uiConfig[pdf] : null);
+}
+function getConfig() { return getConfigFor(appState.currentPdf); }
+
+function updateEditingChip() {
+    const el = document.getElementById("editingScopeName"); if (!el) return;
+    el.textContent = appState.currentPdf === "slave" ? "Slave" : "Master";
+    const chip = document.getElementById("editingScope");
+    if (chip) chip.classList.toggle("slave", appState.currentPdf === "slave");
+}
+
+function setConfigToUI(cfg) {
+    const composeRgbaColor = (rgb, alpha) => {
+        let s = String(rgb || "#ffffff").trim();
+        if (s.startsWith("#")) s = s.slice(1);
+        if (s.length === 3) s = s.split("").map(ch => ch + ch).join("");
+        if (s.length !== 6) s = "ffffff";
+        const a = Math.max(0, Math.min(1, Number(alpha)));
+        const aa = Math.round((Number.isFinite(a) ? a : 1.0) * 255).toString(16).padStart(2, "0");
+        return `#${s}${aa}`;
+    };
+    const m = {
+        "circleDiameter": "CIRCLE_MAX_DIAMETER", "circleDiameterPax": "CIRCLE_MAX_DIAMETER_PAX", "circleColorRgba": "RED", "circleWidth": "CIRCLE_LINE_WIDTH",
+        "labelFontSize": "LABEL_FONT_SIZE", "labelWrapChars": "LABEL_WRAP_CHARS",
+        "offsetX_FirstHalf": "LABEL_OFFSET_X_PAX_FIRST_HALF", "offsetY_FirstHalf": "LABEL_OFFSET_Y_PAX_FIRST_HALF",
+        "offsetX_SecondHalf": "LABEL_OFFSET_X_PAX_SECOND_HALF", "offsetY_SecondHalf": "LABEL_OFFSET_Y_PAX_SECOND_HALF",
+        "circleScale": "CIRCLE_SCALE", "labelLineSpacing": "LABEL_LINE_SPACING",
+        "circleOffsetX_PAX": "CIRCLE_OFFSET_X_PAX", "circleOffsetY_PAX": "CIRCLE_OFFSET_Y_PAX",
+        "circleOffsetX_TP": "CIRCLE_OFFSET_X_TP", "circleOffsetY_TP": "CIRCLE_OFFSET_Y_TP",
+        "offsetX_TP": "LABEL_OFFSET_X_TP", "offsetY_TP": "LABEL_OFFSET_Y_TP",
+        "bgPaddingX": "LABEL_BG_PADDING_X", "bgPaddingY": "LABEL_BG_PADDING_Y",
+        "attachTP": "LABEL_ATTACH_TP",
+    };
+    for (const [uiId, jsonKey] of Object.entries(m)) { if (cfg[jsonKey] !== undefined && document.getElementById(uiId)) document.getElementById(uiId).value = cfg[jsonKey]; }
+    const circleRgbaEl = document.getElementById("circleColorRgba");
+    if (circleRgbaEl) {
+        circleRgbaEl.value = composeRgbaColor(cfg.RED, 1);
+        syncRingColorPickerFromInput();
+    }
+
+    const rgbaEl = document.getElementById("labelBgRgba");
+    if (rgbaEl) {
+        const alpha = cfg.LABEL_BG_ENABLED === false ? 0 : (cfg.LABEL_BG_ALPHA !== undefined ? cfg.LABEL_BG_ALPHA : 1);
+        rgbaEl.value = composeRgbaColor(cfg.LABEL_BG_COLOR_HEX, alpha);
+        syncLabelBgPickerFromInput();
+    }
+}
+
+const CONFIG_CONTROL_IDS = ["circleDiameter", "circleDiameterPax", "circleColorRgba", "circleWidth", "labelFontSize", "labelBgRgba", "labelWrapChars", "offsetX_FirstHalf", "offsetY_FirstHalf", "offsetX_SecondHalf", "offsetY_SecondHalf", "offsetX_TP", "offsetY_TP", "circleScale", "labelLineSpacing", "bgPaddingX", "bgPaddingY", "attachTP", "circleOffsetX_PAX", "circleOffsetY_PAX", "circleOffsetX_TP", "circleOffsetY_TP"];
+
+const ringColorPickerState = { h: 0, s: 0, v: 1, a: 1, initialized: false };
+const labelBgPickerState = { h: 0, s: 0, v: 1, a: 1, initialized: false };
+
+function normalizeRgbaHex(raw, fallback = "#FFFFFFFF") {
+    let s = String(raw || fallback).trim();
+    if (!s.startsWith("#")) s = `#${s}`;
+    s = s.replace(/[^#0-9a-fA-F]/g, "");
+    let h = s.slice(1);
+    if (h.length === 3 || h.length === 4) h = h.split("").map(ch => ch + ch).join("");
+    if (h.length === 6) h += "FF";
+    if (h.length !== 8) return fallback;
+    return `#${h.toUpperCase()}`;
+}
+
+function hsvToRgb(h, s, v) {
+    const c = v * s;
+    const hh = (h / 60) % 6;
+    const x = c * (1 - Math.abs((hh % 2) - 1));
+    let r1 = 0, g1 = 0, b1 = 0;
+    if (hh >= 0 && hh < 1) { r1 = c; g1 = x; b1 = 0; }
+    else if (hh < 2) { r1 = x; g1 = c; b1 = 0; }
+    else if (hh < 3) { r1 = 0; g1 = c; b1 = x; }
+    else if (hh < 4) { r1 = 0; g1 = x; b1 = c; }
+    else if (hh < 5) { r1 = x; g1 = 0; b1 = c; }
+    else { r1 = c; g1 = 0; b1 = x; }
+    const m = v - c;
+    return [Math.round((r1 + m) * 255), Math.round((g1 + m) * 255), Math.round((b1 + m) * 255)];
+}
+
+function rgbToHsv(r, g, b) {
+    const rr = r / 255, gg = g / 255, bb = b / 255;
+    const max = Math.max(rr, gg, bb), min = Math.min(rr, gg, bb);
+    const d = max - min;
+    let h = 0;
+    if (d !== 0) {
+        if (max === rr) h = 60 * (((gg - bb) / d) % 6);
+        else if (max === gg) h = 60 * (((bb - rr) / d) + 2);
+        else h = 60 * (((rr - gg) / d) + 4);
+    }
+    if (h < 0) h += 360;
+    const s = max === 0 ? 0 : d / max;
+    return { h, s, v: max };
+}
+
+function rgbaHexFromState() {
+    const [r, g, b] = hsvToRgb(labelBgPickerState.h, labelBgPickerState.s, labelBgPickerState.v);
+    const aa = Math.round(labelBgPickerState.a * 255).toString(16).padStart(2, "0").toUpperCase();
+    return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}${aa}`.toUpperCase();
+}
+
+function ringRgbaHexFromState() {
+    const [r, g, b] = hsvToRgb(ringColorPickerState.h, ringColorPickerState.s, ringColorPickerState.v);
+    const aa = Math.round(ringColorPickerState.a * 255).toString(16).padStart(2, "0").toUpperCase();
+    return `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}${aa}`.toUpperCase();
+}
+
+function renderRingColorPicker(commit = false) {
+    const base = document.getElementById("ringColorSpaceBase");
+    const ptr = document.getElementById("ringColorPointer");
+    const hueThumb = document.getElementById("ringColorHueThumb");
+    const alphaSlider = document.getElementById("ringColorAlphaSlider");
+    const alphaThumb = document.getElementById("ringColorAlphaThumb");
+    const swatch = document.getElementById("ringColorSwatchColor");
+    const txt = document.getElementById("ringColorTriggerText");
+    const hidden = document.getElementById("circleColorRgba");
+    if (!base || !ptr || !hueThumb || !alphaSlider || !alphaThumb || !swatch || !txt || !hidden) return;
+
+    const [hr, hg, hb] = hsvToRgb(ringColorPickerState.h, 1, 1);
+    const [r, g, b] = hsvToRgb(ringColorPickerState.h, ringColorPickerState.s, ringColorPickerState.v);
+    const rgbaStr = `rgba(${r}, ${g}, ${b}, ${ringColorPickerState.a.toFixed(2)})`;
+
+    base.style.backgroundColor = `rgb(${hr}, ${hg}, ${hb})`;
+    ptr.style.left = `${ringColorPickerState.s * 100}%`;
+    ptr.style.top = `${(1 - ringColorPickerState.v) * 100}%`;
+    hueThumb.style.left = `${(ringColorPickerState.h / 360) * 100}%`;
+    alphaThumb.style.left = `${ringColorPickerState.a * 100}%`;
+    alphaSlider.style.background = `linear-gradient(to right, rgba(${r},${g},${b},0), rgba(${r},${g},${b},1))`;
+    swatch.style.backgroundColor = rgbaStr;
+    txt.textContent = "Pick Color";
+
+    if (commit) {
+        hidden.value = ringRgbaHexFromState();
+        hidden.dispatchEvent(new Event("change"));
+    }
+}
+
+function renderLabelBgPicker(commit = false) {
+    const base = document.getElementById("labelBgSpaceBase");
+    const ptr = document.getElementById("labelBgPointer");
+    const hueThumb = document.getElementById("labelBgHueThumb");
+    const alphaSlider = document.getElementById("labelBgAlphaSlider");
+    const alphaThumb = document.getElementById("labelBgAlphaThumb");
+    const swatch = document.getElementById("labelBgSwatchColor");
+    const txt = document.getElementById("labelBgTriggerText");
+    const hidden = document.getElementById("labelBgRgba");
+    if (!base || !ptr || !hueThumb || !alphaSlider || !alphaThumb || !swatch || !txt || !hidden) return;
+
+    const [hr, hg, hb] = hsvToRgb(labelBgPickerState.h, 1, 1);
+    const [r, g, b] = hsvToRgb(labelBgPickerState.h, labelBgPickerState.s, labelBgPickerState.v);
+    const rgbaStr = `rgba(${r}, ${g}, ${b}, ${labelBgPickerState.a.toFixed(2)})`;
+
+    base.style.backgroundColor = `rgb(${hr}, ${hg}, ${hb})`;
+    ptr.style.left = `${labelBgPickerState.s * 100}%`;
+    ptr.style.top = `${(1 - labelBgPickerState.v) * 100}%`;
+    hueThumb.style.left = `${(labelBgPickerState.h / 360) * 100}%`;
+    alphaThumb.style.left = `${labelBgPickerState.a * 100}%`;
+    alphaSlider.style.background = `linear-gradient(to right, rgba(${r},${g},${b},0), rgba(${r},${g},${b},1))`;
+    swatch.style.backgroundColor = rgbaStr;
+    txt.textContent = "Pick Color";
+
+    if (commit) {
+        hidden.value = rgbaHexFromState();
+        hidden.dispatchEvent(new Event("change"));
+    }
+}
+
+function setupPickerDrag(element, callback) {
+    function onDrag(e) {
+        const rect = element.getBoundingClientRect();
+        let x = (e.clientX - rect.left) / rect.width;
+        let y = (e.clientY - rect.top) / rect.height;
+        x = Math.max(0, Math.min(1, x));
+        y = Math.max(0, Math.min(1, y));
+        callback(x, y);
+    }
+    function onDown(e) {
+        onDrag(e);
+        window.addEventListener("mousemove", onDrag);
+        window.addEventListener("mouseup", onUp);
+    }
+    function onUp() {
+        window.removeEventListener("mousemove", onDrag);
+        window.removeEventListener("mouseup", onUp);
+    }
+    element.addEventListener("mousedown", onDown);
+}
+
+function syncLabelBgPickerFromInput() {
+    const hidden = document.getElementById("labelBgRgba");
+    if (!hidden) return;
+    const hex = normalizeRgbaHex(hidden.value, "#FFFFFFFF");
+    hidden.value = hex;
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    const a = parseInt(hex.slice(7, 9), 16) / 255;
+    const hsv = rgbToHsv(r, g, b);
+    labelBgPickerState.h = hsv.h;
+    labelBgPickerState.s = hsv.s;
+    labelBgPickerState.v = hsv.v;
+    labelBgPickerState.a = a;
+    renderLabelBgPicker(false);
+}
+
+function syncRingColorPickerFromInput() {
+    const hidden = document.getElementById("circleColorRgba");
+    if (!hidden) return;
+    const hex = normalizeRgbaHex(hidden.value, "#FF0000FF");
+    hidden.value = hex;
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    const a = parseInt(hex.slice(7, 9), 16) / 255;
+    const hsv = rgbToHsv(r, g, b);
+    ringColorPickerState.h = hsv.h;
+    ringColorPickerState.s = hsv.s;
+    ringColorPickerState.v = hsv.v;
+    ringColorPickerState.a = a;
+    renderRingColorPicker(false);
+}
+
+function initRingColorPicker() {
+    if (ringColorPickerState.initialized) return;
+    const wrapper = document.getElementById("ringColorPickerWrapper");
+    const trigger = document.getElementById("ringColorTriggerBtn");
+    const panel = document.getElementById("ringColorPanel");
+    const colorSpace = document.getElementById("ringColorSpace");
+    const hue = document.getElementById("ringColorHueSlider");
+    const alpha = document.getElementById("ringColorAlphaSlider");
+    if (!wrapper || !trigger || !panel || !colorSpace || !hue || !alpha) return;
+
+    trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        panel.classList.toggle("active");
+    });
+    document.addEventListener("click", (e) => {
+        if (!wrapper.contains(e.target)) panel.classList.remove("active");
+    });
+
+    setupPickerDrag(colorSpace, (x, y) => {
+        ringColorPickerState.s = x;
+        ringColorPickerState.v = 1 - y;
+        renderRingColorPicker(true);
+    });
+    setupPickerDrag(hue, (x) => {
+        ringColorPickerState.h = x * 360;
+        renderRingColorPicker(true);
+    });
+    setupPickerDrag(alpha, (x) => {
+        ringColorPickerState.a = x;
+        renderRingColorPicker(true);
+    });
+
+    ringColorPickerState.initialized = true;
+    syncRingColorPickerFromInput();
+}
+
+function initLabelBgPicker() {
+    if (labelBgPickerState.initialized) return;
+    const wrapper = document.getElementById("labelBgPickerWrapper");
+    const trigger = document.getElementById("labelBgTriggerBtn");
+    const panel = document.getElementById("labelBgPanel");
+    const colorSpace = document.getElementById("labelBgColorSpace");
+    const hue = document.getElementById("labelBgHueSlider");
+    const alpha = document.getElementById("labelBgAlphaSlider");
+    if (!wrapper || !trigger || !panel || !colorSpace || !hue || !alpha) return;
+
+    trigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        panel.classList.toggle("active");
+    });
+    document.addEventListener("click", (e) => {
+        if (!wrapper.contains(e.target)) panel.classList.remove("active");
+    });
+
+    setupPickerDrag(colorSpace, (x, y) => {
+        labelBgPickerState.s = x;
+        labelBgPickerState.v = 1 - y;
+        renderLabelBgPicker(true);
+    });
+    setupPickerDrag(hue, (x) => {
+        labelBgPickerState.h = x * 360;
+        renderLabelBgPicker(true);
+    });
+    setupPickerDrag(alpha, (x) => {
+        labelBgPickerState.a = x;
+        renderLabelBgPicker(true);
+    });
+
+    labelBgPickerState.initialized = true;
+    syncLabelBgPickerFromInput();
+}
+
+function setupLiveConfigListeners() {
+    CONFIG_CONTROL_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("change", () => { loadPreview(); pushHistory(); });
+    });
+    initRingColorPicker();
+    initLabelBgPicker();
+}
+
+function setupSidebarDivider() {
+    const divider = document.getElementById("sidebarDivider");
+    const sidebar = document.querySelector("aside");
+    if (!divider || !sidebar) return;
+
+    const saved = Number(localStorage.getItem("sidebarWidthPx"));
+    const initial = Number.isFinite(saved) && saved > 0 ? saved : parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--sidebar-width")) || 340;
+    document.documentElement.style.setProperty("--sidebar-width", `${initial}px`);
+    localStorage.setItem("sidebarWidthPx", String(initial));
+
+    let dragging = false;
+    let startX = 0;
+    let startWidth = 0;
+
+    const handleMouseDown = (e) => {
+        dragging = true;
+        startX = e.clientX;
+        startWidth = sidebar.offsetWidth;
+        divider.classList.add("dragging");
+        document.body.style.cursor = "col-resize";
+        document.body.style.userSelect = "none";
+        e.preventDefault();
+    };
+
+    const handleMouseMove = (e) => {
+        if (!dragging) return;
+        const delta = e.clientX - startX;
+        let newWidth = startWidth + delta;
+        
+        const minW = 340;
+        const maxW = Math.floor(window.innerWidth * 0.30);
+        newWidth = Math.max(minW, Math.min(maxW, newWidth));
+        
+        document.documentElement.style.setProperty("--sidebar-width", `${newWidth}px`);
+    };
+
+    const handleMouseUp = () => {
+        if (!dragging) return;
+        dragging = false;
+        divider.classList.remove("dragging");
+        document.body.style.cursor = "default";
+        document.body.style.userSelect = "auto";
+        
+        const finalWidth = sidebar.offsetWidth;
+        localStorage.setItem("sidebarWidthPx", String(finalWidth));
+        
+        updateSidebarContentOverflow();
+        
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    divider.addEventListener("mousedown", (e) => {
+        handleMouseDown(e);
+        document.addEventListener("mousemove", handleMouseMove);
+        document.addEventListener("mouseup", handleMouseUp);
+    });
+
+    updateSidebarContentOverflow();
+}
+
+let historyStack = [], historyIndex = -1;
+const HISTORY_MAX = 100;
+
+function captureState() {
+    syncActiveConfig(); 
+    return {
+        uiConfig: JSON.parse(JSON.stringify(appState.uiConfig)),
+        manualOffsets: JSON.parse(JSON.stringify(appState.manualOffsets)),
+    };
+}
+
+function applyState(state) {
+    if (!state) return;
+    if (state.uiConfig) appState.uiConfig = JSON.parse(JSON.stringify(state.uiConfig));
+    appState.manualOffsets = JSON.parse(JSON.stringify(state.manualOffsets));
+    writeControls(appState.uiConfig && appState.uiConfig[appState.currentPdf]); 
+    updateUndoRedoButtons();
+    loadPreview(); 
+}
+
+function pushHistory() {
+    const snap = captureState();
+    if (historyIndex >= 0 && JSON.stringify(historyStack[historyIndex]) === JSON.stringify(snap)) return; 
+    historyStack = historyStack.slice(0, historyIndex + 1);
+    historyStack.push(snap);
+    if (historyStack.length > HISTORY_MAX) historyStack.shift();
+    historyIndex = historyStack.length - 1;
+    updateUndoRedoButtons();
+}
+
+function undo() { if (historyIndex > 0) { historyIndex--; applyState(historyStack[historyIndex]); } }
+function redo() { if (historyIndex < historyStack.length - 1) { historyIndex++; applyState(historyStack[historyIndex]); } }
+
+function updateUndoRedoButtons() {
+    const disabledUndo = historyIndex <= 0;
+    const disabledRedo = historyIndex >= historyStack.length - 1;
+    const undoTargets = ["undoBtn", "undoBtnCanvas"];
+    const redoTargets = ["redoBtn", "redoBtnCanvas"];
+    undoTargets.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.disabled = disabledUndo;
+    });
+    redoTargets.forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.disabled = disabledRedo;
+    });
+}
+
+function setupUndoRedoShortcuts() {
+    document.addEventListener("keydown", (e) => {
+        if (!(e.ctrlKey || e.metaKey)) return;
+        const k = e.key.toLowerCase();
+        if (k === "z" && !e.shiftKey) { e.preventDefault(); undo(); }
+        else if (k === "y" || (k === "z" && e.shiftKey)) { e.preventDefault(); redo(); }
+    });
+}
+
+function exportPreset() {
+    syncActiveConfig();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify({ uiConfig: appState.uiConfig, manualOffsets: appState.manualOffsets }, null, 2)], {type: "application/json"}));
+    a.download = "annotation_preset.json"; a.click(); showToast("Preset exported", "success");
+}
+
+function importPreset(e) {
+    const file = e.target.files[0]; if (!file) return; const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const data = JSON.parse(event.target.result);
+            if (data.uiConfig) {
+                appState.uiConfig.master = data.uiConfig.master || appState.uiConfig.master;
+                appState.uiConfig.slave = data.uiConfig.slave || appState.uiConfig.slave;
+                writeControls(appState.uiConfig[appState.currentPdf]);
+            } else if (data.config) {
+                setConfigToUI(data.config);
+                const snap = readControls();
+                appState.uiConfig.master = { ...snap };
+                appState.uiConfig.slave = { ...snap };
+            }
+            if (data.manualOffsets) appState.manualOffsets = data.manualOffsets;
+            showToast("Preset imported successfully", "success"); loadPreview(); pushHistory();
+        }
+        catch (err) { showToast("Failed to parse preset", "error"); }
+    };
+    reader.readAsText(file); e.target.value = "";
+}
+
+function resetCurrentViewSettings() {
+    if (!appState.defaultUiConfig) return;
+    const defaults = { ...appState.defaultUiConfig };
+
+    const masterInput = document.getElementById("masterPdfInput");
+    const slaveInput = document.getElementById("slavePdfInput");
+    const excelInput = document.getElementById("excelInput");
+    if (masterInput) masterInput.value = "";
+    if (slaveInput) slaveInput.value = "";
+    if (excelInput) excelInput.value = "";
+
+    appState.selectedProject = null;
+    appState.filesUploaded = { master: false, slave: false, excel: false };
+    appState.fileNames = { master: null, slave: null };
+    appState.pageCount = 0;
+    appState.pageCountByPdf = { master: 0, slave: 0 };
+    appState.currentPage = 0;
+    appState.categorized = { master: [], slave: [], skipped: [] };
+    appState.locations = {};
+    appState.manualOffsets = { master: {}, slave: {} };
+    appState.uiConfig.master = { ...defaults };
+    appState.uiConfig.slave = { ...defaults };
+
+    writeControls(appState.uiConfig[appState.currentPdf]);
+    populateTables();
+    updateHeaderFileName();
+    updatePageLabel();
+
+    const dzExcel = document.getElementById("dz-excel");
+    if (dzExcel) {
+        dzExcel.classList.add("disabled");
+    }
+    if (excelInput) excelInput.disabled = true;
+
+    ["dz-master", "dz-slave", "dz-excel"].forEach(id => {
+        const dz = document.getElementById(id);
+        if (!dz) return;
+        dz.classList.remove("upload-flash");
+        const nameEl = dz.querySelector(".dz-file-name");
+        if (nameEl) {
+            nameEl.textContent = "";
+            nameEl.title = "";
+            nameEl.style.display = "none";
+        }
+    });
+
+    const projectSelect = document.getElementById("projectSelect");
+    const parseBtn = document.getElementById("parseDataBtn");
+    if (projectSelect) {
+        projectSelect.innerHTML = "<option>Awaiting Excel...</option>";
+        projectSelect.disabled = true;
+    }
+    if (parseBtn) parseBtn.disabled = true;
+
+    showAwaitingPdfPlaceholder(appState.currentPdf);
+    showToast("Reset completed", "success");
+    pushHistory();
+}
+
+function bindDropZone(dzId, inputId) {
+    const dz = document.getElementById(dzId), input = document.getElementById(inputId);
+    dz.addEventListener('dragover', e => { e.preventDefault(); if(!input.disabled) dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', e => { e.preventDefault(); dz.classList.remove('dragover'); });
+    dz.addEventListener('drop', e => {
+        e.preventDefault(); dz.classList.remove('dragover'); if (input.disabled) return;
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) { input.files = e.dataTransfer.files; input.dispatchEvent(new Event('change')); }
+    });
+    input.addEventListener('change', () => {
+        if (input.files.length > 0) {
+            const nameEl = dz.querySelector('.dz-file-name'); nameEl.textContent = input.files[0].name; nameEl.title = input.files[0].name; nameEl.style.display = '-webkit-box'; requestAnimationFrame(updateSidebarContentOverflow);  // recalc after file name wrap
+        }
+    });
+}
+
+function setupUploads() {
+    bindDropZone('dz-master', 'masterPdfInput'); bindDropZone('dz-slave', 'slavePdfInput'); bindDropZone('dz-excel', 'excelInput');
+    document.getElementById("masterPdfInput").addEventListener("change", e => uploadPdf(e, "master"));
+    document.getElementById("slavePdfInput").addEventListener("change", e => uploadPdf(e, "slave"));
+
+    document.getElementById("excelInput").addEventListener("change", async e => {
+        const file = e.target.files[0]; if (!file) return;
+        appState.filesUploaded.excel = true; appState.categorized = { master: [], slave: [], skipped: [] };
+        appState.locations = {}; populateTables(); 
+        
+        const fd = new FormData(); fd.append("file", file); showToast("Parsing VT Pins Excel...", "info");
+        setBusy(true, "Parsing matrix…");
+        try {
+            const res = await fetch("/api/parse-excel", { method: "POST", body: fd }); const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Excel parse failed");
+            setExcelDropZoneName(data.excel_name || data.file || file.name || "");
+            const hasProjects = applyProjectList(data.projects || []);
+            const loadedPath = data.excel_name || data.file || file.name || "(path unavailable)";
+            addLog(`Successfully loaded Excel from: ${loadedPath}`, hasProjects ? "success" : "warning");
+            if (!hasProjects) showToast("No compatible projects found in VT Pins Excel.", "warning");
+            else {
+                showToast("VT Pins Excel active. Hit 'Load' to apply.", "success");
+                const dzX = document.getElementById("dz-excel"); if (dzX) { dzX.classList.remove("upload-flash"); void dzX.offsetWidth; dzX.classList.add("upload-flash"); }
+            }
+        } catch (err) { showToast(`VT Pins Excel error: ${err.message}`, "error"); }
+        finally { setBusy(false); }
+    });
+}
+
+async function uploadPdf(e, type) {
+    const file = e.target.files[0]; if (!file) return;
+    appState.filesUploaded[type] = true; appState.fileNames[type] = file.name; appState.manualOffsets[type] = {}; if(appState.currentPdf === type) { appState.locations = {}; updateHeaderFileName(); }
+    const fd = new FormData(); fd.append("file", file); fd.append("type", type); showToast(`Ingesting ${type.toUpperCase()} Assembly PDF...`, "info");
+    setBusy(true, "Uploading Assembly PDF…");
+    try {
+        const res = await fetch("/api/upload-pdf", { method: "POST", body: fd }); const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "PDF upload failed");
+        appState.pageCountByPdf[type] = data.page_count || 0;
+        if (appState.currentPdf === type) {
+            appState.pageCount = data.page_count || 0;
+            if (appState.pageCount <= 1) appState.currentPage = 0;
+        }
+        showToast(`${type.toUpperCase()} Assembly PDF verified.`, "success");
+        const dz = document.getElementById(type === "master" ? "dz-master" : "dz-slave");
+        if (dz) { dz.classList.remove("upload-flash"); void dz.offsetWidth; dz.classList.add("upload-flash"); }
+        unlockExcelUi();
+        if (appState.currentPdf === type) { appState.needsFitToWindow = true; appState.locations = {}; renderDragOverlays(); await loadPreview(); }
+    } catch (err) { showToast(`CAD error: ${err.message}`, "error"); }
+    finally { setBusy(false); }
+}
+
+async function parseData() {
+    const select = document.getElementById("projectSelect"); if (select.options.length > 0 && select.selectedIndex === -1) select.selectedIndex = 0;
+    const project = select.value; if (!project || project.includes("detected") || project.includes("Awaiting")) return; 
+    appState.selectedProject = project; showToast(`Syncing dictionary: ${project}`, "info");
+    setBusy(true, "Syncing matrix…");
+    try {
+        const res = await fetch("/api/categorize", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ project_name: project }) });
+        const data = await res.json(); if (!res.ok) throw new Error(data.error || "Categorize failed");
+        appState.categorized = { master: data.master || [], slave: data.slave || [], skipped: data.skipped || [] }; populateTables();
+        addLog(`Dictionary synchronized. Targets: [Master: ${appState.categorized.master.length}] [Slave: ${appState.categorized.slave.length}]`, "success");
+        await loadPreview();
+    } catch (err) { showToast(`Sync error: ${err.message}`, "error"); }
+    finally { setBusy(false); }
+}
+
+function populateTables() {
+    fillTable("master", appState.categorized.master); fillTable("slave", appState.categorized.slave);
+    const skippedBody = document.getElementById("skippedTableBody"); skippedBody.innerHTML = "";
+    appState.categorized.skipped.forEach(r => { const tr = document.createElement("tr"); tr.innerHTML = `<td>${escapeHtml(r.row)}</td><td>${escapeHtml(r.tp_raw)}</td><td>${escapeHtml(r.net_raw)}</td><td>${escapeHtml(r.reason)}</td>`; skippedBody.appendChild(tr); });
+    document.getElementById("skippedCount").textContent = appState.categorized.skipped.length;
+    scheduleAutoScroll("masterTable");
+    scheduleAutoScroll("slaveTable");
+}
+
+function fillTable(type, rows) {
+    const body = document.getElementById(`${type}TableBody`); body.innerHTML = "";
+    rows.forEach(r => {
+        const tr = document.createElement("tr"); tr.dataset.label = r.pdf_label; 
+        tr.innerHTML = `<td>${escapeHtml(r.pdf_label)}</td><td>${escapeHtml(r.net_label)}</td>`;
+        
+        tr.addEventListener("click", async () => {
+            // Check if we need to switch PDFs first
+            if (appState.currentPdf !== type) {
+                await switchPdf(type);
+                // Add a small 150ms buffer to ensure the DOM has updated before zooming
+                setTimeout(() => zoomToPoint(r.pdf_label), 150);
+            } else {
+                zoomToPoint(r.pdf_label);
+            }
+        }); 
+        
+        body.appendChild(tr);
+    });
+    document.getElementById(`${type}Count`).textContent = rows.length;
+}
+
+function setupTabs() {
+    document.querySelectorAll(".tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+            document.querySelectorAll(".tab").forEach(b => b.classList.remove("active")); document.querySelectorAll(".table-view").forEach(v => v.classList.remove("active"));
+            btn.classList.add("active"); document.getElementById(btn.dataset.tab).classList.add("active");
+            if (AUTO_SCROLL_TABS.has(btn.dataset.tab)) {
+                scheduleAutoScroll(btn.dataset.tab);
+            }
+        });
+    });
+}
+
+function hasValidPdfFor(pdfType) {
+    const inputId = pdfType === "master" ? "masterPdfInput" : "slavePdfInput";
+    const input = document.getElementById(inputId);
+    const hasInputFile = Boolean(input && input.files && input.files.length > 0 && input.files[0]);
+    const hasNamedUpload = Boolean(appState.fileNames && typeof appState.fileNames[pdfType] === "string" && appState.fileNames[pdfType].trim());
+    return hasInputFile || (Boolean(appState.filesUploaded && appState.filesUploaded[pdfType]) && hasNamedUpload);
+}
+
+function showAwaitingPdfPlaceholder(pdfType) {
+    const container = document.getElementById("imgContainer");
+    const viewName = pdfType === "slave" ? "Slave" : "Master";
+    appState.locations = {};
+    appState.pageCount = 0;
+    container.innerHTML = `<div class="placeholder awaiting-placeholder" id="previewPlaceholder"><div class="ph-inner"><span class="material-symbols-rounded">description</span><span>Awaiting ${viewName} Assembly PDF...</span><span class="ph-sub">Upload ${viewName} input to start preview</span></div></div><div id="overlayContainer"></div>`;
+    showStatus("previewStatus", "IDLE", "AWAITING FILES");
+    updatePageLabel();
+}
+
+function ensurePageInRangeOrConfirm(pdfType) {
+    const knownPageCount = Number(appState.pageCountByPdf && appState.pageCountByPdf[pdfType]) || 0;
+    if (knownPageCount <= 0) return true;
+    const maxPageIndex = knownPageCount - 1;
+    if (appState.currentPage <= maxPageIndex) return true;
+    if (confirm("Is it correct assembly drawing? Please verify")) {
+        appState.currentPage = maxPageIndex;
+        return true;
+    }
+    return false;
+}
+
+async function loadPreview() {
+    const pdfType = appState.currentPdf, page = appState.currentPage, pairs = appState.selectedProject ? (appState.categorized[pdfType] || []).map(r => [r.pdf_label, r.net_label]) : [];
+    if (!hasValidPdfFor(pdfType)) {
+        showAwaitingPdfPlaceholder(pdfType);
+        return;
+    }
+    if (!ensurePageInRangeOrConfirm(pdfType)) {
+        updatePageLabel();
+        return;
+    }
+    const container = document.getElementById("imgContainer"), placeholder = document.getElementById("previewPlaceholder");
+    if (placeholder) {
+        placeholder.innerHTML = `<div class="ph-inner"><span class="material-symbols-rounded">hourglass_empty</span><span>Processing layout... Please wait.</span></div>`;
+    } else if (!document.getElementById("pdfImage")) {
+        container.innerHTML = `<div class="placeholder" id="previewPlaceholder"><div class="ph-inner"><span class="material-symbols-rounded">hourglass_empty</span><span>Processing layout... Please wait.</span></div></div><div id="overlayContainer"></div>`;
+    }
+
+    setBusy(true, "Rendering preview…");
+    try {
+        const res = await fetch(`/api/preview-annotated?pdf=${pdfType}&page=${page}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ config: getConfig(), pairs, manual_offsets: appState.manualOffsets[pdfType] || {} }) });
+        const data = await res.json();
+        if (!res.ok || data.status === "ERROR" || !data.image) {
+            showStatus("previewStatus", "ERROR", "Server Crash");
+            container.innerHTML = `<div style="padding: 20px; color: #dc3545; background: #fff3f3; border: 1px solid #dc3545; text-align: left; width: 100%;"><h3 style="margin-top:0;">⚠️ Backend Python Crash</h3><strong>Error:</strong> ${escapeHtml(data.error || "Awaiting Assembly PDF")}<br><br><strong>Traceback:</strong><pre style="background: #1e1e24; color: #ff8b8b; padding: 12px; border-radius: 4px; font-size: 11px; overflow-x: auto; white-space: pre-wrap;">${escapeHtml(data.trace || "")}</pre></div>`;
+            return;
+        }
+
+        if (data.debug_logs && data.debug_logs.length > 0) { data.debug_logs.forEach(log => { addLog(`[DEBUG] ${log}`, log.includes("❌") ? "error" : (log.includes("✅") ? "success" : "info")); }); }
+        appState.pageCount = data.page_count || 0; appState.pageCountByPdf[pdfType] = appState.pageCount; appState.locations = data.locations || {}; appState.pdfWidth = data.pdf_width || 1; appState.pdfHeight = data.pdf_height || 1;
+        const p = document.getElementById("previewPlaceholder"); if (p) p.remove(); const existingImg = document.getElementById("pdfImage"); if(existingImg) existingImg.remove();
+        const overlay = document.getElementById("overlayContainer"); overlay.innerHTML = "";
+
+        const img = new Image(); img.id = "pdfImage"; img.style.display = "block"; img.style.width = "100%"; img.style.height = "auto"; img.style.userSelect = "none";
+        img.style.opacity = "0"; img.style.transition = "opacity 0.18s ease";
+        img.onload = () => { container.dataset.naturalWidth = img.naturalWidth; container.dataset.naturalHeight = img.naturalHeight; if (appState.needsFitToWindow) { fitToWindow(); appState.needsFitToWindow = false; } else applyZoom(); requestAnimationFrame(() => { img.style.opacity = "1"; }); };
+        img.onerror = () => { showStatus("previewStatus", "ERROR", "Render Failed"); container.innerHTML = `<div style="padding:20px; color:#dc3545;">Browser render failure (Payload may be too large).</div>`; };
+        img.src = data.image; container.insertBefore(img, overlay); updatePageLabel(); showStatus("previewStatus", data.status || "SUCCESS", data.status || "SUCCESS");
+        document.getElementById("btnMaster").classList.toggle("active", pdfType === "master"); document.getElementById("btnSlave").classList.toggle("active", pdfType === "slave");
+    } catch (err) { showStatus("previewStatus", "ERROR", "Frontend Crash"); container.innerHTML = `<div style="padding:20px; color:#dc3545;">Frontend Crash: ${escapeHtml(err.message)}</div>`; }
+    finally { setBusy(false); }
+}
+
+
+function renderDragOverlays() {
+    const container = document.getElementById("overlayContainer"); container.innerHTML = ""; const imgContainer = document.getElementById("imgContainer");
+    if (!imgContainer.dataset.naturalWidth || !appState.locations) return; const scaleX = parseFloat(imgContainer.style.width) / appState.pdfWidth;
+
+    for (const [label, data] of Object.entries(appState.locations)) {
+        if (!data.label_rect) continue; const [x0, y0, x1, y1] = data.label_rect; const div = document.createElement("div"); div.className = "drag-label"; div.dataset.label = label;
+        div.style.left = `${x0 * scaleX}px`; div.style.top = `${y0 * scaleX}px`; div.style.width = `${(x1 - x0) * scaleX}px`; div.style.height = `${(y1 - y0) * scaleX}px`;
+        setupDrag(div, label, scaleX); container.appendChild(div);
+    }
+}
+
+function setupDrag(element, label, scale) {
+    let startX, startY, originalLeft, originalTop, isDragging = false;
+    element.addEventListener("mousedown", (e) => { e.preventDefault(); e.stopPropagation(); isDragging = true; startX = e.clientX; startY = e.clientY; originalLeft = parseFloat(element.style.left); originalTop = parseFloat(element.style.top); });
+    document.addEventListener("mousemove", (e) => { if (!isDragging) return; element.style.left = `${originalLeft + (e.clientX - startX)}px`; element.style.top = `${originalTop + (e.clientY - startY)}px`; });
+    document.addEventListener("mouseup", () => {
+        if (!isDragging) return; isDragging = false;
+        const pdfDx = (parseFloat(element.style.left) - originalLeft) / scale, pdfDy = (parseFloat(element.style.top) - originalTop) / scale;
+        if (Math.abs(pdfDx) > 0.5 || Math.abs(pdfDy) > 0.5) {
+            if (!appState.manualOffsets[appState.currentPdf][label]) appState.manualOffsets[appState.currentPdf][label] = { dx: 0, dy: 0 };
+            appState.manualOffsets[appState.currentPdf][label].dx += pdfDx; appState.manualOffsets[appState.currentPdf][label].dy += pdfDy; loadPreview(); pushHistory();
+        }
+    });
+}
+
+async function switchPdf(type) {
+    if (type === appState.currentPdf) return;
+    syncActiveConfig();                                 
+    appState.currentPdf = type;
+    writeControls(appState.uiConfig[type]);             
+    appState.pageCount = Number(appState.pageCountByPdf[type]) || 0;
+    appState.needsFitToWindow = true;
+    updateHeaderFileName(); updateEditingChip();
+    document.getElementById("btnMaster").classList.toggle("active", type === "master");
+    document.getElementById("btnSlave").classList.toggle("active", type === "slave");
+
+    if (!hasValidPdfFor(type)) {
+        showAwaitingPdfPlaceholder(type);
+        return;
+    }
+
+    if (!ensurePageInRangeOrConfirm(type)) {
+        updatePageLabel();
+        return;
+    }
+
+    // Wait for the render to complete before finishing the function
+    await loadPreview();
+}
+function updatePageLabel() {
+    const total = appState.pageCount || 0;
+    const current = total > 0 ? appState.currentPage + 1 : 0;
+
+    const label = document.getElementById("pageLabel");
+    if (label) label.textContent = `${current} / ${total}`;
+}
+function updateZoomLabel() {
+    const label = document.getElementById("zoomLabel");
+    if (label) label.textContent = Math.round(appState.zoomLevel * 100) + "%";
+}
+function resetZoom() {
+    appState.zoomLevel = 1;
+    applyZoom();
+}
+function nextPage() { if (appState.currentPage < appState.pageCount - 1) { appState.currentPage++; loadPreview(); } }
+function prevPage() { if (appState.currentPage > 0) { appState.currentPage--; loadPreview(); } }
+function applyZoom() {
+    const container = document.getElementById("imgContainer");
+    if (!container.dataset.naturalWidth) return;
+    container.style.width = `${Math.max((parseFloat(container.dataset.naturalWidth) || 800) * appState.zoomLevel, 100)}px`;
+    renderDragOverlays();
+    updateZoomLabel();
+}
+function triggerFitToWindow() { appState.needsFitToWindow = true; if (document.getElementById("pdfImage")) { fitToWindow(); appState.needsFitToWindow = false; } }
+function zoomIn() { appState.zoomLevel = Math.min(appState.zoomLevel + 0.25, 5); applyZoom(); }
+function zoomOut() { appState.zoomLevel = Math.max(appState.zoomLevel - 0.25, 0.2); applyZoom(); }
+function fitToWindow() { const canvas = document.getElementById("previewCanvas"), container = document.getElementById("imgContainer"); if (!container.dataset.naturalWidth) return; appState.zoomLevel = Math.max(0.1, Math.min((canvas.clientWidth - 60) / parseFloat(container.dataset.naturalWidth), (canvas.clientHeight - 60) / parseFloat(container.dataset.naturalHeight))); applyZoom(); }
+function setupMouseWheelZoom() { document.getElementById("previewCanvas").addEventListener("wheel", (e) => { if (e.ctrlKey || e.metaKey) { e.preventDefault(); appState.zoomLevel = Math.max(0.1, Math.min(appState.zoomLevel + (e.deltaY > 0 ? -0.1 : 0.1), 5)); applyZoom(); } }, { passive: false }); }
+
+function zoomToPoint(label) {
+    const loc = appState.locations[label]; if (!loc) return;
+    const canvas = document.getElementById("previewCanvas"), container = document.getElementById("imgContainer"); 
+    if (!container.dataset.naturalWidth) return;
+    
+    // Auto-zoom closer if zoomed out too far
+    if (appState.zoomLevel < 2.0) { appState.zoomLevel = 2.0; applyZoom(); }
+    
+    setTimeout(() => {
+        const scaleX = parseFloat(container.style.width) / appState.pdfWidth;
+        const x = loc.cx * scaleX, y = loc.cy * scaleX;
+        
+        // Pan the canvas to center on the target
+        canvas.scrollTo({ left: x - canvas.clientWidth / 2, top: y - canvas.clientHeight / 2, behavior: "smooth" });
+        
+        // Find the targeted label
+        const dragLabel = document.querySelector(`.drag-label[data-label="${label}"]`);
+        if (dragLabel) { 
+            dragLabel.classList.add('sonar-target'); 
+            
+            // Generate 3 staggered sonar ripples
+            for(let i = 0; i < 3; i++) {
+                const ripple = document.createElement('div');
+                ripple.className = 'sonar-ripple';
+                ripple.style.animationDelay = `${i * 0.25}s`; // Stagger the ripples
+                dragLabel.appendChild(ripple);
+                
+                // Self-cleanup the ripple after animation ends
+                setTimeout(() => ripple.remove(), 1200 + (i * 250));
+            }
+            
+            // Remove parent highlight class
+            setTimeout(() => dragLabel.classList.remove('sonar-target'), 2000); 
+        } 
+    }, 50);
+}
+
+async function generatePdfs() {
+    if (!appState.filesUploaded.master && !appState.filesUploaded.slave) { showToast("Cannot generate: No PDFs uploaded.", "error"); return; }
+    
+    const pairsMaster = appState.categorized.master.map(r => [r.pdf_label, r.net_label]), pairsSlave = appState.categorized.slave.map(r => [r.pdf_label, r.net_label]);
+    if (!appState.filesUploaded.master && pairsMaster.length > 0) { if(!confirm("Warning: Master PDF is missing. Proceed generating Slave only?")) return; }
+    if (!appState.filesUploaded.slave && pairsSlave.length > 0) { if(!confirm("Warning: Slave PDF is missing. Proceed generating Master only?")) return; }
+    if (!pairsMaster.length && !pairsSlave.length) return showToast("Sync matrix first.", "warning");
+
+    if (!confirm("Are you sure you want to generate the final PDFs? This process cannot be interrupted.")) return;
+
+    showToast("Engaging rendering engine...", "info");
+    setBusy(true, "Generating PDFs…");
+    try {
+        const res = await fetch("/api/generate", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ config_master: getConfigFor("master"), config_slave: getConfigFor("slave"), page_idx: appState.currentPage, pairs_master: pairsMaster, pairs_slave: pairsSlave, project_name: appState.selectedProject, output_dir: "", manual_offsets_master: appState.manualOffsets.master, manual_offsets_slave: appState.manualOffsets.slave })
+        });
+        const data = await res.json(); if (!res.ok) throw new Error(data.error || "Render failure");
+        if (data.master_stats && data.master_stats.debug_logs) { data.master_stats.debug_logs.forEach(log => addLog(`[MASTER] ${log}`, log.includes("❌") ? "error" : "info")); }
+        if (data.slave_stats && data.slave_stats.debug_logs) { data.slave_stats.debug_logs.forEach(log => addLog(`[SLAVE] ${log}`, log.includes("❌") ? "error" : "info")); }
+
+        const files = data.files || {};
+        let savedCount = 0;
+        const masterInput = document.getElementById("masterPdfInput");
+        const hasMasterInputFile = Boolean(masterInput && masterInput.files && masterInput.files.length > 0 && masterInput.files[0]);
+        if (files.master && hasMasterInputFile) {
+            const ok = await saveGeneratedFile(files.master.filename, b64ToBlob(files.master.b64, "application/pdf"));
+            if (ok) { savedCount++; addLog(`Saved MASTER: ${files.master.filename}`, "success"); }
+            else addLog(`Save canceled: ${files.master.filename}`, "warning");
+        } else if (files.master && !hasMasterInputFile) {
+            addLog("Skipped MASTER save: no Master input file present.", "warning");
+        }
+        const slaveInput = document.getElementById("slavePdfInput");
+        const hasSlaveInputFile = Boolean(slaveInput && slaveInput.files && slaveInput.files.length > 0 && slaveInput.files[0]);
+        if (files.slave && hasSlaveInputFile) {
+            const ok = await saveGeneratedFile(files.slave.filename, b64ToBlob(files.slave.b64, "application/pdf"));
+            if (ok) { savedCount++; addLog(`Saved SLAVE: ${files.slave.filename}`, "success"); }
+            else addLog(`Save canceled: ${files.slave.filename}`, "warning");
+        } else if (files.slave && !hasSlaveInputFile) {
+            addLog("Skipped SLAVE save: no Slave input file present.", "warning");
+        }
+        showToast(savedCount ? "Generation Successful!" : "Generation done — save canceled.", savedCount ? "success" : "warning");
+    } catch (err) { showToast(`Fatal Error: ${err.message}`, "error"); }
+    finally { setBusy(false); }
+}
+</script>
+</body>
+</html>

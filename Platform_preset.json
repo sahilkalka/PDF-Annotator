@@ -1,0 +1,56 @@
+{
+  "uiConfig": {
+    "master": {
+      "circleDiameter": "11",
+      "circleDiameterPax": "11",
+      "circleColor": "#ff0000",
+      "circleWidth": "0.9",
+      "labelFontSize": "4.5",
+      "labelBgRgba": "#FFFFFFFF",
+      "labelWrapChars": "7",
+      "offsetX_FirstHalf": "0",
+      "offsetY_FirstHalf": "2",
+      "offsetX_SecondHalf": "0",
+      "offsetY_SecondHalf": "2",
+      "offsetX_TP": "0",
+      "offsetY_TP": "1",
+      "circleScale": "1.9",
+      "labelLineSpacing": "0.7",
+      "bgPaddingX": "0.2",
+      "bgPaddingY": "0.2",
+      "attachTP": "top",
+      "circleOffsetX_PAX": "0",
+      "circleOffsetY_PAX": "2",
+      "circleOffsetX_TP": "-.5",
+      "circleOffsetY_TP": ".8"
+    },
+    "slave": {
+      "circleDiameter": "11",
+      "circleDiameterPax": "11",
+      "circleColor": "#ff0000",
+      "circleWidth": "0.9",
+      "labelFontSize": "4.5",
+      "labelBgRgba": "#FFFFFFFF",
+      "labelWrapChars": "7",
+      "offsetX_FirstHalf": "0",
+      "offsetY_FirstHalf": "0",
+      "offsetX_SecondHalf": "0",
+      "offsetY_SecondHalf": "0",
+      "offsetX_TP": "0",
+      "offsetY_TP": "0",
+      "circleScale": "1.9",
+      "labelLineSpacing": "0.7",
+      "bgPaddingX": "0.2",
+      "bgPaddingY": "0.2",
+      "attachTP": "top",
+      "circleOffsetX_PAX": "0",
+      "circleOffsetY_PAX": "0",
+      "circleOffsetX_TP": "0",
+      "circleOffsetY_TP": "0"
+    }
+  },
+  "manualOffsets": {
+    "master": {},
+    "slave": {}
+  }
+}
